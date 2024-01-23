@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 
-@FeignClient(value="pedidoIntegration", url = "http://localhost:${server.port}/pedidos")
+@FeignClient(value="pedidoIntegration", url = "http://${pedido.host}/pedidos")
 public interface IPedidoIntegration {
 
     @RequestMapping(method = RequestMethod.GET, value = "/busca-recebidos")
