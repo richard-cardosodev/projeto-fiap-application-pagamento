@@ -29,6 +29,7 @@ para alterar o contexto para o docker-desktop (se necessário)
 ### Para acessar o swagger
 
 > http://localhost:31500/swagger-ui/index.html
+> http://localhost:8080/pagamento/swagger-ui/index.html#/
 
 ### Docs do projeto
 
