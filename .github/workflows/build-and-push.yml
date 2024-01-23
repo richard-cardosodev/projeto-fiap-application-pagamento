@@ -32,7 +32,7 @@ jobs:
         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         secret_access_key: ${{ secrets.AWS_ACCESS_KEY }}
         account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        repo: projeto-fiap
+        repo: projeto-fiap-pagamento
         region: us-east-1
         create_repo: true
 
