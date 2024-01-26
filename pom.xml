@@ -15,7 +15,31 @@
 	<description>Projeto de pós-graduação do grupo 2023-Q1-64 - contexto pagamento</description>
 	<properties>
 		<java.version>1.8</java.version>
+		<sonar.organization>richard-cardosodev</sonar.organization>
+		<sonar.projectKey>richard-cardosodev_projeto-fiap-application-identificacao</sonar.projectKey>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>5.10.1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.cucumber</groupId>
+				<artifactId>cucumber-bom</artifactId>
+				<version>7.15.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -31,13 +55,6 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.4.1</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-openfeign</artifactId>
-			<version>3.1.7</version>
-		</dependency>
-
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -72,79 +89,83 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Junit5 -->
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.9.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.9.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-suite-api</artifactId>
-			<version>1.9.3</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-java -->
+		<!-- Inserir dependências do cucumber -->
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-java</artifactId>
-			<version>7.14.1</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-junit</artifactId>
-			<version>7.14.1</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<!-- WireMock (HTTP~) e Mockito -->
-		<dependency>
-			<groupId>com.github.tomakehurst</groupId>
-			<artifactId>wiremock</artifactId>
-			<version>2.23.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>3.12.4</version>
+			<artifactId>cucumber-junit-platform-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
 
-		<!-- RestAssured for API testing -->
+		<!-- Dependências do jUnit -->
 		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>4.4.0</version> <!-- Use the latest version -->
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-suite</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Fim -->
+
+		<!-- para testar controller de forma mais fluida -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>spring-mock-mvc</artifactId>
-			<version>4.4.0</version> <!-- Use the same version as rest-assured -->
+			<version>5.3.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<version>5.3.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!--Added required depeendencies due to : https://github.com/rest-assured/rest-assured/issues/1168 -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured-common</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>json-path</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>xml-path</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>5.3.0</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.codehaus.groovy</groupId>
+					<artifactId>groovy</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.codehaus.groovy</groupId>
+					<artifactId>groovy-xml</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.12.5</version>
+		</dependency>
+		<!-- Fim das dependências do cucumber -->
 	</dependencies>
 
 	<build>
@@ -153,27 +174,72 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
+				<configuration>
+					<excludes>
+						<exclude>**/CucumberTest.java</exclude>
+					</excludes>
+					<testFailureIgnore>false</testFailureIgnore>
+				</configuration>
+			</plugin>
+
+			<!-- JaCoCo plugin -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.10</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludes>
+						<exclude>br/fiap/projeto/pagamento/external/configuration/**</exclude>
+						<exclude>br/fiap/projeto/pagamento/external/integration/**</exclude>
+						<exclude>br/fiap/projeto/AplicacaoProjetoFiap*</exclude>
+						<exclude>br/fiap/projeto/pagamento/adapter/controller/rest/request/**</exclude>
+						<exclude>br/fiap/projeto/pagamento/adapter/controller/rest/port/**</exclude>
+						<exclude>br/fiap/projeto/pagamento/adapter/controller/rest/response/**</exclude>
+						<exclude>br/fiap/projeto/pagamento/adapter/controller/mapper/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
 	<profiles>
-	  <profile>
-	    <id>allButIntegrationTests</id>
-	    <build>
-	      <plugins>
-	        <plugin>
-	          <groupId>org.apache.maven.plugins</groupId>
-	          <artifactId>maven-surefire-plugin</artifactId>
-	          <version>2.22.2</version>
-	          <configuration>
-	            <excludes>
-	              <exclude>**/integracao/*.java</exclude>
-	            </excludes>
-	          </configuration>
-	        </plugin>
-	      </plugins>
-	    </build>
-	  </profile>
+		<profile>
+			<id>bdd</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>3.2.5</version>
+						<configuration>
+							<includes combine.self="override">
+								<include>**/CucumberTest.java</include>
+							</includes>
+							<excludes combine.self="override">
+							</excludes>
+							<testFailureIgnore>true</testFailureIgnore>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
-
 </project>
