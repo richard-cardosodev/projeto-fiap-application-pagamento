@@ -10,7 +10,6 @@ public class PagamentoAEnviarAoGatewayDTORequest {
 
     private String codigoPedido;
     private Double valorTotal;
-    //TODO remover o Status da Request
     private StatusPagamento statusPagamento;
     private Date dataPagamento;
 
@@ -46,7 +45,6 @@ public class PagamentoAEnviarAoGatewayDTORequest {
         this.statusPagamento = statusPagamento;
     }
 
-    //TODO validar a manutenção de enviar a Data ao Gateway - se possível remover
     public Date getDataPagamento() {
         return dataPagamento;
     }

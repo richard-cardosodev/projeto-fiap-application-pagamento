@@ -1,28 +1,12 @@
 package br.fiap.projeto.pagamento;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import br.fiap.projeto.pagamento.external.repository.entity.PagamentoEntity;
+import br.fiap.projeto.pagamento.adapter.gateway.BuscaPagamentoRepositoryAdapterGateway;
+import br.fiap.projeto.pagamento.entity.Pagamento;
+import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
 import br.fiap.projeto.pagamento.usecase.BuscaPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.ProcessaNovoPagamentoUseCase;
-import br.fiap.projeto.pagamento.usecase.exceptions.ResourceAlreadyInProcessException;
 import br.fiap.projeto.pagamento.usecase.exceptions.ResourceNotFoundException;
-import br.fiap.projeto.pagamento.usecase.exceptions.mensagens.MensagemDeErro;
-import br.fiap.projeto.pagamento.usecase.port.repository.IBuscaPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.repository.IProcessaNovoPagamentoRepositoryAdapterGateway;
-import br.fiap.projeto.pagamento.usecase.port.usecase.IAtualizaStatusPagamentoUsecase;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,10 +16,12 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import br.fiap.projeto.pagamento.adapter.controller.AtualizaStatusPagamentoRestAdapterController;
-import br.fiap.projeto.pagamento.adapter.gateway.BuscaPagamentoRepositoryAdapterGateway;
-import br.fiap.projeto.pagamento.entity.Pagamento;
-import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PagamentoServiceTest {
@@ -44,18 +30,11 @@ public class PagamentoServiceTest {
         private BuscaPagamentoUseCase buscaPagamentoUseCase;
         // @InjectMocks
         private ProcessaNovoPagamentoUseCase novoPagamentoUseCase;
-        @InjectMocks
-        private AtualizaStatusPagamentoRestAdapterController atualizaStatusPagamentoRestAdapterController;
-
-        @Mock
-        private IBuscaPagamentoRepositoryAdapterGateway buscaPagamentoRepositoryAdapterGateway;
         @Mock
         private BuscaPagamentoRepositoryAdapterGateway buscaPagamentoAdapterGateway;
 
         @Mock
         private IProcessaNovoPagamentoRepositoryAdapterGateway processaNovoPagamentoAdapterGateway;
-        @Mock
-        private IAtualizaStatusPagamentoUsecase atualizaStatusPagamentoUsecase;
 
         Pagamento pagamento;
 
@@ -120,23 +99,6 @@ public class PagamentoServiceTest {
                 assertNotNull(possivelPagamento);
                 assertEquals(pagamento, possivelPagamento);
         }
-
-//        @Test
-//        public void deveriaLancarExcecaoAoCriarUmPagamentoParaUmCodigoDePedidoJaExistente() {
-//                UUID codigo = UUID.randomUUID();
-//                List<Pagamento> pagamentosExistentes = setupListaDePagamentos();
-//
-//                when(buscaPagamentoUseCase.findByCodigoPedido(eq("c20cf05a-39a0-4f38-89b6-dc55bcb8e1e5")))
-//                        .thenReturn(pagamentosExistentes);
-//
-//                Pagamento pagamento = new Pagamento(codigo, "c20cf05a-39a0-4f38-89b6-dc55bcb8e1e5", StatusPagamento.IN_PROCESS, new Date(), 235.4);
-//
-//                ResourceAlreadyInProcessException exception =  assertThrows(ResourceAlreadyInProcessException.class,
-//                        () -> novoPagamentoUseCase.criaNovoPagamento(pagamento));
-//
-//                 Assertions.assertEquals(MensagemDeErro.PAGAMENTO_EXISTENTE.getMessage(), exception.getMessage());
-//        }
-
 
         private static List<Pagamento> setupListaDePagamentos() {
                 List<Pagamento> listaPagamentos = Arrays.asList(

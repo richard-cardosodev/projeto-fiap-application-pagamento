@@ -1,4 +1,4 @@
-package br.fiap.projeto.pagamento;
+package br.fiap.projeto.pagamento.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

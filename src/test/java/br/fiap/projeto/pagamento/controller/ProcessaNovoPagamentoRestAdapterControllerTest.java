@@ -1,4 +1,4 @@
-package br.fiap.projeto.pagamento;
+package br.fiap.projeto.pagamento.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,7 +34,7 @@ public class ProcessaNovoPagamentoRestAdapterControllerTest {
     @Test
     public void deveriaCriarUmNovoPagamento() {
         PedidoAPagarDTORequest pedidoRequest = new PedidoAPagarDTORequest();
-        Pagamento pagamento = new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(1234454),
+        Pagamento pagamento = new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(),
                 50.89);
         Mockito.when(processaNovoPagamentoUseCase.criaNovoPagamento(Mockito.any(Pagamento.class)))
                 .thenReturn(pagamento);

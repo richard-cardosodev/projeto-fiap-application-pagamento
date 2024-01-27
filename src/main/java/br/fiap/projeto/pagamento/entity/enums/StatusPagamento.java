@@ -16,8 +16,5 @@ public enum StatusPagamento {
 		this.descricao = descricao;
 	}
 
-	public String getDescricao(){
-		return descricao;
-	}
 }
  

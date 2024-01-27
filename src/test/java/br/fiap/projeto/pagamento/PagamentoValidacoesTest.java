@@ -1,6 +1,5 @@
 package br.fiap.projeto.pagamento;
 
-import br.fiap.projeto.pagamento.adapter.controller.rest.request.PedidoAPagarDTORequest;
 import br.fiap.projeto.pagamento.entity.Pagamento;
 import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
 import br.fiap.projeto.pagamento.usecase.exceptions.UnprocessablePaymentException;
@@ -10,8 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class PagamentoValidacoesTest {
@@ -80,11 +78,79 @@ public class PagamentoValidacoesTest {
                 "Mensagem de erro");
     }
 
-    private static PedidoAPagarDTORequest setupNewPaymentRequest() {
-        PedidoAPagarDTORequest requestDTO = new PedidoAPagarDTORequest();
-        requestDTO.setDataPagamento(new Date());
-        requestDTO.setCodigoPedido(String.valueOf(UUID.randomUUID()));
-        requestDTO.setValorTotal(75.0);
-        return requestDTO;
+    @Test
+    public void deveriaCriarUmPagamentoComTodosOsDadosExcetoCodigoPagamento(){
+
+        String codigoPedido = String.valueOf(UUID.randomUUID());
+        Double valorTotal = 100.0;
+        StatusPagamento status = StatusPagamento.PENDING;
+        Date dataPagamento = new Date();
+
+        Pagamento pagamento = new Pagamento(codigoPedido, valorTotal, status, dataPagamento);
+
+        assertNotNull(pagamento);
+        assertEquals(codigoPedido, pagamento.getCodigoPedido());
+        assertEquals(valorTotal, pagamento.getValorTotal());
+        assertEquals(status, pagamento.getStatus());
+        assertEquals(dataPagamento, pagamento.getDataPagamento());
     }
+
+    @Test
+    public void deveriaCriarUmPagamentoApenasComCodigoPedidoEStatus(){
+
+        String codigoPedido = String.valueOf(UUID.randomUUID());
+        StatusPagamento status = StatusPagamento.PENDING;
+
+        Pagamento pagamento = new Pagamento(codigoPedido, status);
+
+        assertNotNull(pagamento);
+        assertEquals(codigoPedido, pagamento.getCodigoPedido());
+        assertEquals(status, pagamento.getStatus());
+    }
+
+    @Test
+    public void deveriaColocarPagamentoEmProcessamento(){
+
+        Pagamento pagamento = setupPayment(StatusPagamento.PENDING);
+
+        assertTrue(pagamento.podeSerProcessado(StatusPagamento.PENDING, StatusPagamento.IN_PROCESS));
+        assertFalse(pagamento.podeSerProcessado(StatusPagamento.APPROVED, StatusPagamento.IN_PROCESS));
+        assertFalse(pagamento.podeSerProcessado(StatusPagamento.PENDING, StatusPagamento.CANCELLED));
+    }
+
+    @Test
+    public void deveriaCancelarPagamentoValido(){
+        Pagamento pagamento = setupPayment(StatusPagamento.REJECTED);
+        pagamento.cancelaPagamento(pagamento);
+        assertEquals(StatusPagamento.CANCELLED, pagamento.getStatus());
+    }
+
+    @Test
+    public void deveriaRejeitarPagamentoValido(){
+        Pagamento pagamento = setupPayment(StatusPagamento.CANCELLED);
+        pagamento.rejeitaPagamento(pagamento);
+        assertEquals(StatusPagamento.REJECTED, pagamento.getStatus());
+    }
+
+    @Test
+    public void deveriaAprovarPagamentoValido(){
+        Pagamento pagamento = setupPayment(StatusPagamento.IN_PROCESS);
+        pagamento.aprovaPagamento(pagamento);
+        assertEquals(StatusPagamento.APPROVED, pagamento.getStatus());
+
+    }
+
+
+    @Test
+    public void deveriaColocarPagamentoValidoEPendenteEmProcessamento(){
+        Pagamento pagamento = setupPayment(StatusPagamento.PENDING);
+        pagamento.colocaEmProcessamento(pagamento);
+        assertEquals(StatusPagamento.IN_PROCESS, pagamento.getStatus());
+    }
+
+    private static Pagamento setupPayment(StatusPagamento statusPagamento) {
+        Pagamento pagamento = new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), statusPagamento, new Date(), 150.74);
+        return pagamento;
+    }
+
 }

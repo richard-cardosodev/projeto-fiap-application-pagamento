@@ -21,7 +21,7 @@ public class Pagamento {
 		this.status = status;
 		this.dataPagamento = dataPagamento;
 		this.valorTotal = valorTotal;
-		ValidaPagamento();
+		validaPagamento();
 	}
 
 	// INFO usado no conversor do PedidoAPagarDTORequest
@@ -86,16 +86,6 @@ public class Pagamento {
 		return Objects.hash(getCodigo());
 	}
 
-	@Override
-	public String toString() {
-		return "Pagamento{" +
-				"codigo=" + codigo +
-				", codigoPedido=" + codigoPedido +
-				", status=" + status +
-				", dataPagamento=" + dataPagamento +
-				'}';
-	}
-
 	public void colocaEmProcessamento(Pagamento pagamento) {
 		pagamento.setStatus(StatusPagamento.IN_PROCESS);
 	}
@@ -116,7 +106,7 @@ public class Pagamento {
 		return statusAtual.equals(StatusPagamento.PENDING) && statusRequest.equals(StatusPagamento.IN_PROCESS);
 	}
 
-	private void ValidaPagamento() {
+	private void validaPagamento() {
 		if ((codigo == null) || (codigoPedido == null) || (dataPagamento == null)) {
 			throw new UnprocessablePaymentException("Pagamento falhou");
 		}

@@ -31,7 +31,6 @@ public class PagamentoDTORequest {
         this.valorTotal = valorTotal;
     }
 
-    //INFO usado no atualizar Status com a resposta do Gateway de Pagamento
     public PagamentoDTORequest(PagamentoStatusDTORequest pagamentoStatusDTORequest) {
         this.setCodigoPedido(pagamentoStatusDTORequest.getCodigoPedido());
         this.setStatus(pagamentoStatusDTORequest.getStatus());
