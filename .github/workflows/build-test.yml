@@ -1,4 +1,4 @@
-name: "Docker Image Build Test"
+name: "Run Tests"
 
 on:
   workflow_dispatch:
@@ -6,28 +6,64 @@ on:
 
 jobs:
 
-  build-image:
+  run-tests:
 
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    
-    # Setup Maven and JDK
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'adopt'
-        java-version: '11'
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Run tests
-      run: mvn test
-    
-    # Maven build
-    - name: Build with Maven
-      run: mvn package
+        # Setup Maven and JDK
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-   # Build Docker image
-    - name: Build Docker image
-      run: docker build .
+      - name: Set up the database
+        env:
+          DB_PASSWORD_PLACEHOLDER: ${{ secrets.PROJETOFIAP_DB_PASSWORD }}
+        run: |
+          cd ./src/test/resources/deploy
+          docker-compose up -d
+
+      - name: Wait for PostgreSQL Container to be Live and Ready
+        run: |
+          timeout=300
+          elapsed=0
+          echo "Waiting for PostgreSQL container to be live and ready..."
+          while ! docker exec $(docker ps --filter name=db -q) pg_isready -h localhost -p 5432; do
+            if [ $elapsed -ge $timeout ]; then
+              echo "Timed out waiting for PostgreSQL container to be live and ready."
+              docker logs $(docker ps --filter name=db -q)
+              exit 1
+            fi
+            printf '.'
+          
+            echo "======================================================"
+            echo "Current time: $(date)"
+            docker ps
+            echo "======================================================"
+          
+            sleep 5
+            elapsed=$((elapsed + 5))
+          done
+          echo "PostgreSQL container is live and ready!"
+
+      - name: Run tests
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.PROJETOFIAP_DB_PASSWORD }}
+        run: mvn clean verify sonar:sonar
+
+      - name: Check for tests failures
+        run: |
+          if grep -q '<error message=' target/surefire-reports/*.xml; then
+            echo "Falha nos testes"
+            exit 1
+          fi
+
+      # Build Docker image
+      - name: Build Docker image
+        run: docker build .

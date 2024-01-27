@@ -17,14 +17,55 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up JDK 11
+      # Setup Maven and JDK
+    - name: Set up JDK 17
       uses: actions/setup-java@v2
       with:
-        distribution: 'adopt'
-        java-version: '11'
+        distribution: 'temurin'
+        java-version: '17'
 
-    - name: Build jar using Maven
-      run: mvn package -Dmaven.test.skip
+    - name: Set up the database
+      env:
+        DB_PASSWORD_PLACEHOLDER: ${{ secrets.PROJETOFIAP_DB_PASSWORD }}
+      run: |
+        cd ./src/test/resources/deploy
+        docker-compose up -d
+
+    - name: Wait for PostgreSQL Container to be Live and Ready
+      run: |
+        timeout=300
+        elapsed=0
+        echo "Waiting for PostgreSQL container to be live and ready..."
+        while ! docker exec $(docker ps --filter name=db -q) pg_isready -h localhost -p 5432; do
+          if [ $elapsed -ge $timeout ]; then
+            echo "Timed out waiting for PostgreSQL container to be live and ready."
+            docker logs $(docker ps --filter name=db -q)
+            exit 1
+          fi
+          printf '.'
+        
+          echo "======================================================"
+          echo "Current time: $(date)"
+          docker ps
+          echo "======================================================"
+        
+          sleep 5
+          elapsed=$((elapsed + 5))
+        done
+        echo "PostgreSQL container is live and ready!"
+
+    - name: Run tests
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SPRING_DATASOURCE_PASSWORD: ${{ secrets.PROJETOFIAP_DB_PASSWORD }}
+      run: mvn clean verify sonar:sonar
+
+    - name: Check for tests failures
+      run: |
+        if grep -q '<error message=' target/surefire-reports/*.xml; then
+          echo "Falha nos testes"
+          exit 1
+        fi
             
     - name: Build Docker Image and push to AWS ECR
       uses: kciter/aws-ecr-action@v4
@@ -32,7 +73,7 @@ jobs:
         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         secret_access_key: ${{ secrets.AWS_ACCESS_KEY }}
         account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        repo: projeto-fiap
+        repo: projeto-fiap-pagamento
         region: us-east-1
         create_repo: true
 

@@ -16,8 +16,9 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<sonar.organization>richard-cardosodev</sonar.organization>
-		<sonar.projectKey>richard-cardosodev_projeto-fiap-application-identificacao</sonar.projectKey>
+		<sonar.projectKey>richard-cardosodev_projeto-fiap-application-pagamento</sonar.projectKey>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.projectName>projeto-fiap-application-pagamento</sonar.projectName>
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
@@ -89,12 +90,13 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Inserir dependências do cucumber -->
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-java</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Dependências do jUnit -->
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-junit-platform-engine</artifactId>
@@ -112,61 +114,15 @@
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- Fim -->
 
-		<!-- para testar controller de forma mais fluida -->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>spring-mock-mvc</artifactId>
-			<version>5.3.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>json-schema-validator</artifactId>
-			<version>5.3.1</version>
-			<scope>test</scope>
-		</dependency>
-		<!--Added required depeendencies due to : https://github.com/rest-assured/rest-assured/issues/1168 -->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured-common</artifactId>
-			<version>5.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>json-path</artifactId>
-			<version>5.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>xml-path</artifactId>
-			<version>5.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>5.3.0</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.codehaus.groovy</groupId>
-					<artifactId>groovy</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.codehaus.groovy</groupId>
-					<artifactId>groovy-xml</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>2.12.5</version>
-		</dependency>
-		<!-- Fim das dependências do cucumber -->
-		<!-- Dependências do Gson -->
+		<!-- WireMock (HTTP~) e Mockito -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -205,18 +161,17 @@
 
 	<build>
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.2.5</version>
 				<configuration>
-					<excludes>
-						<exclude>**/CucumberTest.java</exclude>
-					</excludes>
 					<testFailureIgnore>false</testFailureIgnore>
 				</configuration>
 			</plugin>
@@ -242,39 +197,13 @@
 				</executions>
 				<configuration>
 					<excludes>
-						<exclude>br/fiap/projeto/pagamento/external/configuration/**</exclude>
-						<exclude>br/fiap/projeto/pagamento/external/integration/**</exclude>
+						<exclude>br/fiap/projeto/**/external/config/**</exclude>
 						<exclude>br/fiap/projeto/AplicacaoProjetoFiap*</exclude>
-						<exclude>br/fiap/projeto/pagamento/adapter/controller/rest/request/**</exclude>
-						<exclude>br/fiap/projeto/pagamento/adapter/controller/rest/port/**</exclude>
-						<exclude>br/fiap/projeto/pagamento/adapter/controller/rest/response/**</exclude>
-						<exclude>br/fiap/projeto/pagamento/adapter/controller/mapper/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 
-	<profiles>
-		<profile>
-			<id>bdd</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>3.2.5</version>
-						<configuration>
-							<includes combine.self="override">
-								<include>**/CucumberTest.java</include>
-							</includes>
-							<excludes combine.self="override">
-							</excludes>
-							<testFailureIgnore>true</testFailureIgnore>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
