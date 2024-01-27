@@ -60,7 +60,6 @@ public class BuscaPagamentoUseCase implements IBuscaPagamentoUseCase {
     public Pagamento findByCodigoPedidoRejected(String codigoPedido) {
         try{
             Optional<List<Pagamento>> possivelPagamento = Optional.ofNullable(pagamentoAdapterGateway.findByCodigoPedidoAndStatusPagamento(codigoPedido, StatusPagamento.REJECTED));
-            System.out.println("Pagamento dentro do findByCodigoPedidoRejected " + possivelPagamento);
             return possivelPagamento.get().stream().findFirst().get();
         }catch(NoSuchElementException elementException){
             throw new ResourceNotFoundException(MensagemDeErro.PEDIDO_PAGAMENTO_NAO_ENCONTRADO.getMessage());

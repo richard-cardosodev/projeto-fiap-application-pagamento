@@ -32,25 +32,14 @@ public class ProcessaNovoPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void testCriaNovoPagamento() {
-        // Crie um objeto de PedidoAPagarDTORequest para usar no teste
-        PedidoAPagarDTORequest pedidoRequest = new PedidoAPagarDTORequest(/* preencha os campos necessários */);
-
-        // Crie um objeto de Pagamento que o caso de uso deve retornar
-        Pagamento pagamento = new Pagamento(UUID.randomUUID(), "123", StatusPagamento.APPROVED, new Date(1234454),
+    public void deveriaCriarUmNovoPagamento() {
+        PedidoAPagarDTORequest pedidoRequest = new PedidoAPagarDTORequest();
+        Pagamento pagamento = new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(1234454),
                 50.89);
-
-        // Configure o comportamento simulado do caso de uso para retornar o pagamento
         Mockito.when(processaNovoPagamentoUseCase.criaNovoPagamento(Mockito.any(Pagamento.class)))
                 .thenReturn(pagamento);
-
-        // Chame o método da classe controladora
         PagamentoNovoDTOResponse response = controller.criaNovoPagamento(pedidoRequest);
-
-        // Verifique se o caso de uso foi chamado com os parâmetros corretos
         Mockito.verify(processaNovoPagamentoUseCase).criaNovoPagamento(Mockito.any(Pagamento.class));
-
-        // Faça as verificações necessárias no response
         assertEquals(pagamento.getCodigoPedido(), response.getCodigoPedido());
 
     }

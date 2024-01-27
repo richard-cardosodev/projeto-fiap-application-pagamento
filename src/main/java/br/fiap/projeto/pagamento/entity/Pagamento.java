@@ -98,22 +98,18 @@ public class Pagamento {
 
 	public void colocaEmProcessamento(Pagamento pagamento) {
 		pagamento.setStatus(StatusPagamento.IN_PROCESS);
-		System.out.println("Notifica pedido: " + this.getCodigoPedido() + ", pagamento está em processamento.");
 	}
 
 	public void aprovaPagamento(Pagamento pagamento) {
 		pagamento.setStatus(StatusPagamento.APPROVED);
-		System.out.println("Notifica aprovação do pagamento do pedido: " + this.getCodigoPedido());
 	}
 
 	public void cancelaPagamento(Pagamento pagamento) {
 		pagamento.setStatus(StatusPagamento.CANCELLED);
-		System.out.println("Notifica cancelamento do pagamento do pedido: " + this.getCodigoPedido());
 	}
 
 	public void rejeitaPagamento(Pagamento pagamento) {
 		pagamento.setStatus(StatusPagamento.REJECTED);
-		System.out.println("Notifica rejeição do pagamento do pedido: " + this.getCodigoPedido());
 	}
 
 	public boolean podeSerProcessado(StatusPagamento statusAtual, StatusPagamento statusRequest) {

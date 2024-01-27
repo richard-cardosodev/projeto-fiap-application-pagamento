@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,11 +13,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import br.fiap.projeto.pagamento.external.repository.entity.PagamentoEntity;
 import br.fiap.projeto.pagamento.usecase.BuscaPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.ProcessaNovoPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.exceptions.ResourceAlreadyInProcessException;
 import br.fiap.projeto.pagamento.usecase.exceptions.ResourceNotFoundException;
 import br.fiap.projeto.pagamento.usecase.exceptions.mensagens.MensagemDeErro;
+import br.fiap.projeto.pagamento.usecase.port.repository.IBuscaPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.repository.IProcessaNovoPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IAtualizaStatusPagamentoUsecase;
 import org.junit.jupiter.api.Assertions;
@@ -39,14 +41,17 @@ import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
 public class PagamentoServiceTest {
 
         @InjectMocks
-        private BuscaPagamentoUseCase pagamentoUseCase;
+        private BuscaPagamentoUseCase buscaPagamentoUseCase;
         // @InjectMocks
         private ProcessaNovoPagamentoUseCase novoPagamentoUseCase;
         @InjectMocks
         private AtualizaStatusPagamentoRestAdapterController atualizaStatusPagamentoRestAdapterController;
 
         @Mock
+        private IBuscaPagamentoRepositoryAdapterGateway buscaPagamentoRepositoryAdapterGateway;
+        @Mock
         private BuscaPagamentoRepositoryAdapterGateway buscaPagamentoAdapterGateway;
+
         @Mock
         private IProcessaNovoPagamentoRepositoryAdapterGateway processaNovoPagamentoAdapterGateway;
         @Mock
@@ -58,156 +63,101 @@ public class PagamentoServiceTest {
         public void setUp() {
                 MockitoAnnotations.initMocks(this);
                 novoPagamentoUseCase = new ProcessaNovoPagamentoUseCase(processaNovoPagamentoAdapterGateway,
-                                pagamentoUseCase);
+                        buscaPagamentoUseCase);
+                buscaPagamentoUseCase = new BuscaPagamentoUseCase(buscaPagamentoAdapterGateway);
         }
 
+
         @Test
-        public void buscaPagamentoValido() {
+        public void deveriaRetornarUmPagamentoAoBuscarPorCodigoValido() {
                 UUID codigo = UUID.randomUUID();
 
-                pagamentoUseCase = new BuscaPagamentoUseCase(buscaPagamentoAdapterGateway);
+                pagamento = new Pagamento(codigo, String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(), 55.41);
 
-                // Preparação da massa de teste
-                pagamento = new Pagamento(codigo, "1234", StatusPagamento.APPROVED, new Date(12345), 1d);
-
-                // Configuração de comportamento simulado para o buscaPagamentoAdapterGateway
                 Mockito.when(buscaPagamentoAdapterGateway.findByCodigo(codigo))
-                                .thenReturn(pagamento);
+                        .thenReturn(pagamento);
 
-                // Execução do método
-                Pagamento resultado = pagamentoUseCase.findByCodigo(codigo);
+                Pagamento pagamentoEncontrado = buscaPagamentoUseCase.findByCodigo(codigo);
 
-                // Verificação do Resultado
-                assertNotNull(resultado);
-                assertEquals(pagamento, resultado);
+                assertNotNull(pagamentoEncontrado);
+                assertEquals(pagamento, pagamentoEncontrado);
 
         }
 
         @Test
-        public void buscaPagamentoInValido() {
+        public void deveriaLancarExecaoAoBuscarUmPagamentoComCodigoInexistente() {
                 UUID codigo = UUID.randomUUID();
-                UUID codigo2 = UUID.randomUUID();
-
-                pagamentoUseCase = new BuscaPagamentoUseCase(buscaPagamentoAdapterGateway);
-
-                // Preparação da massa de teste
-                pagamento = new Pagamento(codigo, "1234", StatusPagamento.APPROVED, new Date(12345), 1d);
-
-                // Configuração de comportamento simulado para o buscaPagamentoAdapterGateway
-                Mockito.when(buscaPagamentoAdapterGateway.findByCodigo(codigo))
-                                .thenReturn(pagamento);
-
-                // Execução do método
                 assertThrows(ResourceNotFoundException.class, () -> {
-                        pagamentoUseCase.findByCodigo(codigo2);
+                        buscaPagamentoUseCase.findByCodigo(codigo);
                 });
+
         }
 
         @Test
-        public void buscaTodosPagamentos() {
+        public void deveriaRetornarTodosOsPagamentos() {
 
-                UUID codigo = UUID.randomUUID();
-                UUID codigo2 = UUID.randomUUID();
+                List<Pagamento> listaDePagamentosMockados = setupListaDePagamentos();
 
-                // Preparação da massa de teste
-                List<Pagamento> listaPagamento = Arrays.asList(
-                                new Pagamento(codigo, "1234", StatusPagamento.APPROVED, new Date(12345), 1d),
-                                new Pagamento(codigo2, "1234", StatusPagamento.APPROVED, new Date(12345), 1d));
+                buscaPagamentoUseCase = new BuscaPagamentoUseCase(buscaPagamentoAdapterGateway);
 
-                pagamentoUseCase = new BuscaPagamentoUseCase(buscaPagamentoAdapterGateway);
-
-                // Configuração de comportamento simulado para o buscaPagamentoAdapterGateway
                 Mockito.when(buscaPagamentoAdapterGateway.findAll())
-                                .thenReturn(listaPagamento);
+                                .thenReturn(listaDePagamentosMockados);
 
-                // Execução do método
-                List<Pagamento> resultado = pagamentoUseCase.findAll();
+                List<Pagamento> listaDePagamentosEncontrados = buscaPagamentoUseCase.findAll();
 
-                // Verificação do Resultado
-                assertNotNull(resultado);
-                assertEquals(listaPagamento, resultado);
+                assertNotNull(listaDePagamentosEncontrados);
+                assertEquals(listaDePagamentosMockados, listaDePagamentosEncontrados);
 
-        }
-
-        // @Test
-        // public void buscaStatusPagamentos() {
-
-        // // Preparação da massa de teste
-        // List<Pagamento> listaPagamento3 = Arrays.asList(
-        // // new Pagamento(codigo, "1234", StatusPagamento.APPROVED, new Date(12345),
-        // 1d),
-        // new Pagamento(UUID.randomUUID(), "1234", StatusPagamento.CANCELLED, new
-        // Date(12345),
-        // 1d),
-        // new Pagamento(UUID.randomUUID(), "1234", StatusPagamento.CANCELLED, new
-        // Date(12345),
-        // 1d));
-
-        // // Configuração de comportamento simulado para o buscaPagamentoAdapterGateway
-        // when(buscaPagamentoAdapterGateway.findByStatusPagamento(any(StatusPagamento.class)))
-        // .thenReturn(listaPagamento3);
-
-        // // Execução do método
-        // List<Pagamento> resultado =
-        // pagamentoUseCase.findByStatusPagamento(StatusPagamento.CANCELLED);
-
-        // // Verificação do Resultado
-        // assertNotNull(resultado);
-        // assertEquals(2, resultado.size());
-
-        // }
-
-        @Test
-        public void testCriaNovoPagamentoQuandoEhPossivelPagar() {
-                UUID codigo = UUID.randomUUID();
-                // Configure o comportamento simulado do buscaPagamentoUseCase
-                when(pagamentoUseCase.findByCodigoPedido(anyString())).thenReturn(new ArrayList<>());
-
-                // Crie um pagamento de exemplo
-                Pagamento pagamento = new Pagamento(codigo, "1234", StatusPagamento.APPROVED, new Date(), 100.0);
-
-                // Chame o método que você deseja testar
-                Pagamento resultado = novoPagamentoUseCase.criaNovoPagamento(pagamento);
-
-                // Verifique o resultado
-                assertNotNull(resultado);
-                assertEquals(pagamento, resultado);
         }
 
         @Test
-        public void testCriaNovoPagamentoQuandoNaoEhPossivelPagar() {
+        public void deveriaCriarUmNovoPagamentoSeForPossivelPagar() {
                 UUID codigo = UUID.randomUUID();
-                // Configure o comportamento simulado do buscaPagamentoUseCase para retornar
-                // pagamentos existentes
-                List<Pagamento> pagamentosExistentes = new ArrayList<>();
-                pagamentosExistentes.add(new Pagamento(codigo, "1234", StatusPagamento.APPROVED, new Date(), 100.0));
-                when(pagamentoUseCase.findByCodigoPedido(anyString())).thenReturn(pagamentosExistentes);
+                pagamento = new Pagamento(codigo, String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(), 75.51);
 
-                // Crie um pagamento de exemplo
-                Pagamento pagamento = new Pagamento(codigo, "1234", StatusPagamento.APPROVED, new Date(), 100.0);
+                Pagamento possivelPagamento = novoPagamentoUseCase.criaNovoPagamento(pagamento);
 
-                // Tente chamar o método que você deseja testar e capture a exceção
-                ResourceAlreadyInProcessException exception = assertThrows(ResourceAlreadyInProcessException.class,
-                                () -> {
-                                        novoPagamentoUseCase.criaNovoPagamento(pagamento);
-                                });
-
-                // Verifique a mensagem da exceção, se necessário
-                Assertions.assertEquals(MensagemDeErro.PAGAMENTO_EXISTENTE.getMessage(), exception.getMessage());
+                assertNotNull(possivelPagamento);
+                assertEquals(pagamento, possivelPagamento);
         }
 
-        // @Test
-        // public void testAtualizaStatusPagamentoParaEmProcessamento() {
+//        @Test
+//        public void deveriaLancarExcecaoAoCriarUmPagamentoParaUmCodigoDePedidoJaExistente() {
+//                UUID codigo = UUID.randomUUID();
+//                List<Pagamento> pagamentosExistentes = setupListaDePagamentos();
+//
+//                when(buscaPagamentoUseCase.findByCodigoPedido(eq("c20cf05a-39a0-4f38-89b6-dc55bcb8e1e5")))
+//                        .thenReturn(pagamentosExistentes);
+//
+//                Pagamento pagamento = new Pagamento(codigo, "c20cf05a-39a0-4f38-89b6-dc55bcb8e1e5", StatusPagamento.IN_PROCESS, new Date(), 235.4);
+//
+//                ResourceAlreadyInProcessException exception =  assertThrows(ResourceAlreadyInProcessException.class,
+//                        () -> novoPagamentoUseCase.criaNovoPagamento(pagamento));
+//
+//                 Assertions.assertEquals(MensagemDeErro.PAGAMENTO_EXISTENTE.getMessage(), exception.getMessage());
+//        }
 
-        // PagamentoDTORequest pagamentoDTORequest = new
-        // PagamentoDTORequest(UUID.randomUUID(), "123",
-        // StatusPagamento.IN_PROCESS, new Date(12345), 10d);
 
-        // atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(pagamentoDTORequest);
+        private static List<Pagamento> setupListaDePagamentos() {
+                List<Pagamento> listaPagamentos = Arrays.asList(
 
-        // Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(
-        // pagamentoDTORequest.getCodigoPedido(),
-        // StatusPagamento.IN_PROCESS);
-        // }
+                        new Pagamento(UUID.randomUUID(), "d8dc5531-25d9-4690-9636-07e5e419bc83", StatusPagamento.IN_PROCESS, new Date(),
+                                235.4),
+                        new Pagamento(UUID.randomUUID(), "41d2375c-15ee-4274-bc41-04dea2a118b4", StatusPagamento.PENDING, new Date(),
+                                55.7),
+                        new Pagamento(UUID.randomUUID(), "c20cf05a-39a0-4f38-89b6-dc55bcb8e1e5", StatusPagamento.APPROVED, new Date(),
+                                97.12),
+                        new Pagamento(UUID.randomUUID(), "da3f92a2-ee12-4ec1-805d-c889584a3e4d", StatusPagamento.REJECTED, new Date(),
+                                15.27),
+                        new Pagamento(UUID.randomUUID(), "07ed9681-fa92-40db-843c-33739149e864", StatusPagamento.CANCELLED, new Date(),
+                                354.44),
+                        new Pagamento(UUID.randomUUID(), "e8f9c900-fe52-417c-b53c-d298ace56277", StatusPagamento.APPROVED, new Date(),
+                                14.12),
+                        new Pagamento(UUID.randomUUID(), "54368936-c0b7-483f-aa25-4ffa7ec79270", StatusPagamento.APPROVED, new Date(),
+                                50.13)
+                );
+
+                return listaPagamentos;
+        }
 
 }

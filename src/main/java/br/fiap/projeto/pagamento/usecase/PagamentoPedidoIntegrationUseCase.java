@@ -55,19 +55,15 @@ public class PagamentoPedidoIntegrationUseCase implements IPagamentoPedidoIntegr
     }
 
     private Pagamento getPagamento(String codigoPedido) {
-        Pagamento pagamento = buscaPagamentoUseCase.findByCodigoPedido(codigoPedido)
+        return buscaPagamentoUseCase.findByCodigoPedido(codigoPedido)
                 .stream()
                 .filter(p -> p.getStatus().equals(StatusPagamento.APPROVED) || p.getStatus().equals(StatusPagamento.CANCELLED))
                 .findFirst()
                 .get();
-        System.out.println("Recuperando Pagamento dentro do Schedule");
-        System.out.println(pagamento);
-        return pagamento;
     }
 
     @Override
     public void shutDownScheduler() {
-        System.out.println("Dentro od ShutDown");
         scheduler.shutdown();
     }
 }
