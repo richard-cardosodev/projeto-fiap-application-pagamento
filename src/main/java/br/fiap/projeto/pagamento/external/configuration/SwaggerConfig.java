@@ -24,7 +24,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "Projeto de pós-graduação (Fiap/Alura) do grupo 2023-Q1-64 - contexto pagamento",
+                "Projeto de pós-graduação (Fiap/Alura) do grupo 2023-Q1-64 - Contexto de Pagamento",
                 "Integrantes: Ademar Terra, Aline Santos, Danilo LR, Mario Sclavo, Richard Cardoso",
                 "1.0",
                 "",

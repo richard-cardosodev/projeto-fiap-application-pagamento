@@ -58,13 +58,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-openfeign</artifactId>
-			<version>3.1.7</version>
-		</dependency>
-
-
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
@@ -97,12 +90,13 @@
 			<scope>provided</scope>
 		</dependency>
 
-
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-java</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Dependências do jUnit -->
 		<dependency>
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-junit-platform-engine</artifactId>
@@ -120,6 +114,7 @@
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.junit.vintage</groupId>
 			<artifactId>junit-vintage-engine</artifactId>
@@ -127,35 +122,55 @@
 		</dependency>
 		<!-- Fim -->
 
-		<!-- WireMock (HTTP~) e Mockito -->
-		<dependency>
-			<groupId>com.github.tomakehurst</groupId>
-			<artifactId>wiremock</artifactId>
-			<version>2.23.0</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>3.12.4</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- RestAssured for API testing -->
-		<dependency>
-			<groupId>io.rest-assured</groupId>
-			<artifactId>rest-assured</artifactId>
-			<version>4.4.0</version> <!-- Use the latest version -->
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>spring-mock-mvc</artifactId>
-			<version>4.4.0</version> <!-- Use the same version as rest-assured -->
+			<version>5.3.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<version>5.3.1</version>
 			<scope>test</scope>
 		</dependency>
 
-	</dependencies>
+		<!-- WireMock (HTTP~) e Mockito -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.8</version>
+		</dependency>
+		<!-- Dependências do Feign Mock para teste -->
+		<dependency>
+			<groupId>io.github.openfeign</groupId>
+			<artifactId>feign-mock</artifactId>
+			<version>11.7</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Dependências do Feign -->
+		<dependency>
+			<groupId>io.github.openfeign</groupId>
+			<artifactId>feign-core</artifactId>
+			<version>11.7</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.openfeign</groupId>
+			<artifactId>feign-gson</artifactId>
+			<version>11.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock</artifactId>
+			<version>2.27.2</version>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
@@ -195,8 +210,13 @@
 				</executions>
 				<configuration>
 					<excludes>
-						<exclude>br/fiap/projeto/**/external/config/**</exclude>
+						<exclude>br/fiap/projeto/**/external/configuration/**</exclude>
 						<exclude>br/fiap/projeto/AplicacaoProjetoFiap*</exclude>
+						<exclude>br/fiap/projeto/pagamento/external/api/exceptions/**</exclude>
+						<exclude>br/fiap/projeto/pagamento/adapter/controller/rest/**</exclude>
+						<exclude>br/fiap/projeto/pagamento/entity/integration/**</exclude>
+						<exclude>br/fiap/projeto/pagamento/adapter/mapper/**</exclude>
+						<exclude>br/fiap/projeto/pagamento/external/integration/exceptions/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

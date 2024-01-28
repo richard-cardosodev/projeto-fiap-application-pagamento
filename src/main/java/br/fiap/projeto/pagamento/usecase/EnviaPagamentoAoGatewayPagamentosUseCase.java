@@ -25,7 +25,6 @@ public class EnviaPagamentoAoGatewayPagamentosUseCase implements IEnviaPagamento
 
    @Override
     public void enviaRequestAoSistemaExternoPagamentos(String codigoPedido, StatusPagamento status) {
-        //TODO aqui faria as chamadas às integrações com o sistema externo - hoje apenas é simulado
         printMensagensSimulaIntegracaoComSistemaExterno(codigoPedido);
    }
 

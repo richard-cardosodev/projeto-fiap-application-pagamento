@@ -1,11 +1,10 @@
 package br.fiap.projeto.pagamento.entity;
 
-import java.util.Date;
-import java.util.Objects;
-import java.util.UUID;
-
 import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
 import br.fiap.projeto.pagamento.usecase.exceptions.UnprocessablePaymentException;
+
+import java.util.Date;
+import java.util.UUID;
 
 public class Pagamento {
 
@@ -21,7 +20,7 @@ public class Pagamento {
 		this.status = status;
 		this.dataPagamento = dataPagamento;
 		this.valorTotal = valorTotal;
-		ValidaPagamento();
+		validaPagamento();
 	}
 
 	// INFO usado no conversor do PedidoAPagarDTORequest
@@ -71,56 +70,27 @@ public class Pagamento {
 		return valorTotal;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Pagamento pagamento = (Pagamento) o;
-		return Objects.equals(getCodigo(), pagamento.getCodigo());
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(getCodigo());
-	}
-
-	@Override
-	public String toString() {
-		return "Pagamento{" +
-				"codigo=" + codigo +
-				", codigoPedido=" + codigoPedido +
-				", status=" + status +
-				", dataPagamento=" + dataPagamento +
-				'}';
-	}
-
 	public void colocaEmProcessamento(Pagamento pagamento) {
 		pagamento.setStatus(StatusPagamento.IN_PROCESS);
-		System.out.println("Notifica pedido: " + this.getCodigoPedido() + ", pagamento está em processamento.");
 	}
 
 	public void aprovaPagamento(Pagamento pagamento) {
 		pagamento.setStatus(StatusPagamento.APPROVED);
-		System.out.println("Notifica aprovação do pagamento do pedido: " + this.getCodigoPedido());
 	}
 
 	public void cancelaPagamento(Pagamento pagamento) {
 		pagamento.setStatus(StatusPagamento.CANCELLED);
-		System.out.println("Notifica cancelamento do pagamento do pedido: " + this.getCodigoPedido());
 	}
 
 	public void rejeitaPagamento(Pagamento pagamento) {
 		pagamento.setStatus(StatusPagamento.REJECTED);
-		System.out.println("Notifica rejeição do pagamento do pedido: " + this.getCodigoPedido());
 	}
 
 	public boolean podeSerProcessado(StatusPagamento statusAtual, StatusPagamento statusRequest) {
 		return statusAtual.equals(StatusPagamento.PENDING) && statusRequest.equals(StatusPagamento.IN_PROCESS);
 	}
 
-	private void ValidaPagamento() {
+	private void validaPagamento() {
 		if ((codigo == null) || (codigoPedido == null) || (dataPagamento == null)) {
 			throw new UnprocessablePaymentException("Pagamento falhou");
 		}
@@ -129,7 +99,7 @@ public class Pagamento {
 			throw new UnprocessablePaymentException("Pagamento falhou");
 		}
 
-		if (status.equals(null)) {
+		if (status == null) {
 			throw new NullPointerException("Pagamento falhou");
 		}
 	}

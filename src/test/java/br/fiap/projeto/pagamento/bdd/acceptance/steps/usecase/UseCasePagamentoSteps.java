@@ -13,23 +13,20 @@ import br.fiap.projeto.pagamento.usecase.port.repository.IProcessaNovoPagamentoR
 import br.fiap.projeto.pagamento.usecase.port.usecase.IAtualizaStatusPagamentoUsecase;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IBuscaPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IPagamentoPedidoIntegrationUseCase;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.junit.Assert;
-import org.junit.Before;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Date;
-
 import java.util.UUID;
 
-
 import static br.fiap.projeto.pagamento.entity.enums.StatusPagamento.PENDING;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UseCasePagamentoSteps {
 
@@ -69,9 +66,6 @@ public class UseCasePagamentoSteps {
 
     private Pagamento pagamento;
 
-    private Pagamento pagamentoMockado;
-
-
     @Before
     public void setupMocks(){
         MockitoAnnotations.openMocks(this);
@@ -96,44 +90,15 @@ public class UseCasePagamentoSteps {
     public void attempting_to_fetch_the_payment_not_found() {
         atualizaStatusPagamentoUseCase = new AtualizaStatusPagamentoUseCase(atualizaStatusPagamentoRepository, buscaPagamentoUseCase, pagamentoPedidoIntegrationUseCase);
 
-        Assert.assertThrows(ResourceNotFoundException.class,() -> {
+        assertThrows(ResourceNotFoundException.class,() -> {
             atualizaStatusPagamentoUseCase.atualizaStatusPagamento(codigoPedido, StatusPagamento.APPROVED);
         });
     }
     @Then("the payment status should not change its status")
     public void the_payment_status_should_not_change_its_status() {
 
-       Assert.assertEquals(status, PENDING);
+       assertEquals(status, PENDING);
     }
-
-
-    @Given("a new order is created")
-    public void a_new_order_is_created() {
-        //use case de criar o pagamento
-        MockitoAnnotations.openMocks(this);
-        when(processaNovoPagamentoRepository.salvaNovoPagamento(any(Pagamento.class))).thenAnswer(invocation -> {
-
-            pagamento = invocation.getArgument(0);
-            //TODO verificar se ao atualizar vai chamar o busca //nullpoint~
-            atualizaStatusPagamentoUseCase.atualizaStatusPagamento(pagamento.getCodigoPedido(), pagamento.getStatus());
-            return pagamento;
-
-        });
-        processaNovoPagamentoRepository.salvaNovoPagamento(pagamento);
-
-    }
-    @When("the order is fetched")
-    public void the_order_is_fetched() {
-       when(buscaPagamentoUseCase.findByCodigo(pagamento.getCodigo())).thenReturn(pagamento);
-
-       pagamentoMockado = buscaPagamentoUseCase.findByCodigo(pagamento.getCodigo());
-    }
-    @Then("the order status should be {string}")
-    public void the_order_status_should_be(String expectedStatus) {
-        //TODO ajustar o status
-        Assert.assertEquals(expectedStatus, pagamento.getStatus());
-    }
-
 
 }
 

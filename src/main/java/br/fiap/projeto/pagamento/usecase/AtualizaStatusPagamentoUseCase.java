@@ -33,7 +33,7 @@ public class AtualizaStatusPagamentoUseCase implements IAtualizaStatusPagamentoU
      * <li>PENDING ->  IN_PROCESS somente via atualização de status pelo método de envio ao gateway, não deve ser atualizado aqui</li>
      *
      * @param codigoPedido
-     * @param statusPagamento
+     * @param novoStatusPagamento
      */
     @Override
     public void atualizaStatusPagamento(String codigoPedido, StatusPagamento novoStatusPagamento) {
@@ -67,7 +67,6 @@ public class AtualizaStatusPagamentoUseCase implements IAtualizaStatusPagamentoU
 
     private void triggerAtualizaStatusPagamentoDoPedido(String codigoPedido) {
         {
-            System.out.println("TASK AGENDADA: ATUALIZA STATUS DO PAGAMENTO DO PEDIDO");
             pagamentoPedidoIntegrationUseCase.scheduleAtualizaPagamentoPedido(codigoPedido);
         }
     }
@@ -87,7 +86,6 @@ public class AtualizaStatusPagamentoUseCase implements IAtualizaStatusPagamentoU
         if(!pagamento.podeSerProcessado(pagamento.getStatus(), statusPagamento)){
             throw new UnprocessablePaymentException(MensagemDeErro.STATUS_INVALIDO.getMessage());
         }
-        System.out.println("Pode ser processado ");
         pagamento.colocaEmProcessamento(pagamento);
         salvaStatus(pagamento);
     }
