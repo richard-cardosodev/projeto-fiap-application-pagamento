@@ -38,9 +38,9 @@ public class PagamentoIntegrationTest {
     private static final String ENDPOINT_ENVIA_GATEWAY = "/pagamento/gateway/gateway-de-pagamento";
     private static final String ENDPOINT_RETORNO_GATEWAY = "/pagamento/retorno-gateway/atualiza-status";
     private static final String ENDPOINT_BUSCA_PAGAMENTO = "/pagamento/busca";
-
     private static final String ENDPOINT_BUSCA_PEDIDOS_A_PAGAR = "/pagamento/pedido/a-pagar";
     private static final String ENDPOINT_BUSCA_PAGAMENTO_POR_CODIGO_PEDIDO = "/pagamento/busca/por-codigo-pedido";
+    private static final String ENDPOINT_BUSCA_PAGAMENTO_POR_CODIGO_STATUS = "pagamento/busca/por-status/";
 
     private static final String ENDPOINT_BUSCA_PAGAMENTOS_APROVADOS = "/pagamento/busca/aprovados";
     private static final String ENDPOINT_LISTA_PAGAMENTO = "/pagamento/busca/todos";
@@ -216,6 +216,12 @@ public class PagamentoIntegrationTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.get(ENDPOINT_BUSCA_PEDIDOS_A_PAGAR)
         ).andExpect(status().isOk());
+    }
+
+    @Test
+    public void deveriaEncontrarPedidosPorStatus() throws Exception {
+        String endpoint = String.format("/%s/%s", ENDPOINT_BUSCA_PAGAMENTO_POR_CODIGO_STATUS, StatusPagamento.PENDING);
+        mockMvc.perform(MockMvcRequestBuilders.get(endpoint)).andExpect(status().isOk());
     }
 
     @Test

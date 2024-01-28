@@ -28,7 +28,7 @@ public class PagamentoServiceTest {
 
         @InjectMocks
         private BuscaPagamentoUseCase buscaPagamentoUseCase;
-        // @InjectMocks
+
         private ProcessaNovoPagamentoUseCase novoPagamentoUseCase;
         @Mock
         private BuscaPagamentoRepositoryAdapterGateway buscaPagamentoAdapterGateway;

@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -75,5 +76,29 @@ public class PedidoPagamentoIntegrationUseCaseTest {
             pagamentoPedidoIntegrationUseCase.scheduleAtualizaPagamentoPedido(codigoPedido);
         });
     }
+
+    @Test
+    public void deveriaAtualizarOStatusDoPagamentoViaSchedulerIntegration() {
+
+        IPagamentoPedidoIntegrationGateway pagamentoPedidoIntegrationGatewayMock = mock(IPagamentoPedidoIntegrationGateway.class);
+        IBuscaPagamentoUseCase buscaPagamentoUseCaseMock = mock(IBuscaPagamentoUseCase.class);
+
+        PagamentoPedidoIntegrationUseCase pagamentoPedidoIntegrationUseCase = new PagamentoPedidoIntegrationUseCase(
+                pagamentoPedidoIntegrationGatewayMock, buscaPagamentoUseCaseMock);
+
+        String codigoPedido = pagamento.getCodigoPedido(); // provide a valid code
+
+        List<Pagamento> pagamentos = Arrays.asList(
+                new Pagamento("91a032ce-8c0d-4574-9f10-76be33e5f148", StatusPagamento.APPROVED),
+                new Pagamento("32d61e8d-fb5f-4d3b-add2-727b765740ee", StatusPagamento.CANCELLED)
+        );
+
+        when(buscaPagamentoUseCaseMock.findByCodigoPedido(codigoPedido)).thenReturn(pagamentos);
+
+        assertDoesNotThrow(() -> pagamentoPedidoIntegrationUseCase.scheduleAtualizaPagamentoPedido(codigoPedido));
+
+
+    }
+
 
 }
