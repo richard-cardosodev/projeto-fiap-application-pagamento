@@ -127,6 +127,25 @@ public class PagamentoIntegrationTest {
     }
 
     @Test
+    public void deveriaEncontrarPagamentoPorCodigoPedido() throws Exception {
+
+        String codigoPedido = "5a63ab44-32ee-463a-a8b8-eabc143e7419";
+        Pagamento expectedPagamento = new Pagamento(UUID.randomUUID(), codigoPedido, StatusPagamento.APPROVED, new Date(), 50.0);
+        List<Pagamento> expectedPagamentos = Collections.singletonList(expectedPagamento);
+
+        String url = String.format("%s/%s", ENDPOINT_BUSCA_PAGAMENTO_POR_CODIGO_PEDIDO, pagamento.getCodigoPedido());
+        Mockito.when(pagamentoAdapterGateway.findByCodigoPedido(codigoPedido)).thenReturn(expectedPagamentos);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get(url))
+                .andDo(result -> {
+                    if (result.getResponse().getStatus() == 200) {
+                        result.getResponse().getContentAsString();
+                    } else if (result.getResponse().getStatus() == 404) {
+                        result.getResolvedException().getMessage();
+                    }
+                });
+    }
+    @Test
     public void  deveriaSalvarNovoPagamentoParaPedido() throws Exception {
 
         PedidoAPagarDTORequest novoRequestDTO = new PedidoAPagarDTORequest(String.valueOf(UUID.randomUUID()), 45.74);

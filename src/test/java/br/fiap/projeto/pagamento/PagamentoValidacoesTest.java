@@ -81,6 +81,14 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
+    public void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComValorTotalNulo() {
+        Assertions.assertThrows(
+                UnprocessablePaymentException.class,
+                () -> new Pagamento(null, String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(1234454), null),
+                "Mensagem de erro");
+    }
+
+    @Test
     public void deveriaCriarUmPagamentoComTodosOsDadosExcetoCodigoPagamento(){
 
         String codigoPedido = String.valueOf(UUID.randomUUID());

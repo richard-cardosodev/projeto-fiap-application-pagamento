@@ -191,6 +191,19 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
+    public void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoEmProcessamento() {
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            when(pagamentoAdapterGateway.findByCodigoPedidoAndStatusPagamento(codigoPedido, StatusPagamento.IN_PROCESS))
+                    .thenReturn(Collections.emptyList());
+
+            buscaUseCaseMock.findByCodigoPedidoInProcess(codigoPedido);
+            verify(pagamentoAdapterGateway).findByCodigoPedidoAndStatusPagamento(codigoPedido, StatusPagamento.IN_PROCESS);
+        });
+
+    }
+
+    @Test
     public void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoRejeitados() {
 
         assertThrows(ResourceNotFoundException.class, () -> {
@@ -211,18 +224,6 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
                 buscaUseCaseMock.findByCodigoPedidoPending(codigoPedido);
                 verify(pagamentoAdapterGateway).findByCodigoPedidoAndStatusPagamento(codigoPedido, StatusPagamento.PENDING);
             });
-    }
-
-    @Test
-    public void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoEmProcessamento() {
-
-        assertThrows(ResourceNotFoundException.class, () -> {
-
-            when(pagamentoAdapterGateway.findByCodigoPedidoAndStatusPagamento(codigoPedido, StatusPagamento.IN_PROCESS))
-                    .thenReturn(Collections.emptyList());
-            buscaUseCaseMock.findByCodigoPedidoPending(codigoPedido);
-            verify(pagamentoAdapterGateway).findByCodigoPedidoAndStatusPagamento(codigoPedido, StatusPagamento.IN_PROCESS);
-        });
     }
 
     @Test
