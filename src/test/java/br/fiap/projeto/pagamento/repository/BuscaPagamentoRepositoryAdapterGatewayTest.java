@@ -214,6 +214,18 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
+    public void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoEmProcessamento() {
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+
+            when(pagamentoAdapterGateway.findByCodigoPedidoAndStatusPagamento(codigoPedido, StatusPagamento.IN_PROCESS))
+                    .thenReturn(Collections.emptyList());
+            buscaUseCaseMock.findByCodigoPedidoPending(codigoPedido);
+            verify(pagamentoAdapterGateway).findByCodigoPedidoAndStatusPagamento(codigoPedido, StatusPagamento.IN_PROCESS);
+        });
+    }
+
+    @Test
     public void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigo() {
 
         assertThrows(ResourceNotFoundException.class, () -> {

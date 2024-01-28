@@ -1,7 +1,6 @@
 package br.fiap.projeto.pagamento.entity.integration;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +16,4 @@ public class PagamentoPedidoResponse {
         this.dataPagamento = dataPagamento;
     }
 
-    public LocalDateTime getDataPagamento() {
-        return dataPagamento;
-    }
 }

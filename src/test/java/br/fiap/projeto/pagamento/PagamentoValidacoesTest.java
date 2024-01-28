@@ -2,6 +2,8 @@ package br.fiap.projeto.pagamento;
 
 import br.fiap.projeto.pagamento.entity.Pagamento;
 import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
+import br.fiap.projeto.pagamento.external.integration.port.PagamentoPedidoResponseDTO;
+import br.fiap.projeto.pagamento.external.repository.entity.PagamentoEntity;
 import br.fiap.projeto.pagamento.usecase.exceptions.UnprocessablePaymentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,8 +14,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class PagamentoValidacoesTest {
 
+public class PagamentoValidacoesTest {
 
     @Test
     public void deveriaRetornarStatusCodeOkAoTentarCriarUmPagamentoValido() {
@@ -146,6 +148,45 @@ public class PagamentoValidacoesTest {
         Pagamento pagamento = setupPayment(StatusPagamento.PENDING);
         pagamento.colocaEmProcessamento(pagamento);
         assertEquals(StatusPagamento.IN_PROCESS, pagamento.getStatus());
+    }
+
+
+    @Test
+    public void deveriaVerificarDoisPagamentosDiferentes(){
+
+        PagamentoEntity pagamentoA = new PagamentoEntity(setupPayment(StatusPagamento.PENDING));
+        PagamentoEntity pagamentoB = new PagamentoEntity(setupPayment(StatusPagamento.IN_PROCESS));
+        PagamentoEntity pagamentoC = pagamentoA;
+
+        assertNotEquals(pagamentoA, pagamentoB);
+        assertNotEquals(pagamentoB, pagamentoA);
+        assertEquals(pagamentoA, pagamentoC);
+
+        assertNotEquals(pagamentoA.hashCode(), pagamentoB.hashCode());
+    }
+
+    @Test
+    public void deveriaRetornarOsAtributosDaEntidade(){
+        PagamentoEntity pagamento = new PagamentoEntity(setupPayment(StatusPagamento.PENDING));
+        String codigoPedido = pagamento.getCodigoPedido();
+        UUID codigo = pagamento.getCodigo();
+        StatusPagamento statusPagamento = pagamento.getStatusPagamento();
+        Date data = pagamento.getDataPagamento();
+        Double valorTotal = pagamento.getValorTotal();
+
+        assertEquals(codigoPedido, pagamento.getCodigoPedido());
+        assertEquals(codigo, pagamento.getCodigo());
+        assertEquals(statusPagamento, pagamento.getStatusPagamento());
+        assertEquals(data, pagamento.getDataPagamento());
+        assertEquals(valorTotal, pagamento.getValorTotal());
+
+    }
+
+    @Test
+    public void deveriaCriarUmPagamentoPedidoResponseDTO(){
+        PagamentoPedidoResponseDTO pagamentoPedidoResponseDTO = new PagamentoPedidoResponseDTO(String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED.name());
+
+        assertNotNull(pagamentoPedidoResponseDTO);
     }
 
     private static Pagamento setupPayment(StatusPagamento statusPagamento) {
