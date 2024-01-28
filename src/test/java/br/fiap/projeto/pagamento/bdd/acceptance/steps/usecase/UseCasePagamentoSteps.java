@@ -97,7 +97,7 @@ public class UseCasePagamentoSteps {
     @Then("the payment status should not change its status")
     public void the_payment_status_should_not_change_its_status() {
 
-       assertEquals(status, PENDING);
+       assertEquals(PENDING, status);
     }
 
 }

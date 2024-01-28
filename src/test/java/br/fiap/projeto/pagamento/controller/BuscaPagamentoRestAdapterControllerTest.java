@@ -26,7 +26,7 @@ import br.fiap.projeto.pagamento.adapter.controller.BuscaPagamentoRestAdapterCon
 import br.fiap.projeto.pagamento.entity.Pagamento;
 import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
 
-public class BuscaPagamentoRestAdapterControllerTest {
+class BuscaPagamentoRestAdapterControllerTest {
 
     @Mock
     private IBuscaPagamentoUseCase buscaPagamentoUseCase;
@@ -39,7 +39,7 @@ public class BuscaPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaBuscarTodosOsPagamentos() {
+    void deveriaBuscarTodosOsPagamentos() {
 
         List<Pagamento> pagamentos = setupListaDePagamentos();
 
@@ -54,7 +54,7 @@ public class BuscaPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaBuscarUmPagamentoUsandoOCodigoDoPedido() {
+    void deveriaBuscarUmPagamentoUsandoOCodigoDoPedido() {
         UUID codigoDoPedido = UUID.randomUUID();
 
         Pagamento pagamento = new Pagamento(UUID.randomUUID(), String.valueOf(codigoDoPedido), StatusPagamento.APPROVED, new Date(),
@@ -70,7 +70,7 @@ public class BuscaPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaRetornarListaDePagamentosCancelados() {
+    void deveriaRetornarListaDePagamentosCancelados() {
 
         List<Pagamento> listaPagamentos = setupListaDePagamentos(StatusPagamento.CANCELLED);
 
@@ -86,7 +86,7 @@ public class BuscaPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaRetornarListaDePagamentosAprovados() {
+    void deveriaRetornarListaDePagamentosAprovados() {
 
         List<Pagamento> listaPagamentos = setupListaDePagamentos(StatusPagamento.APPROVED);
 
@@ -102,7 +102,7 @@ public class BuscaPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaRetornarListaDePagamentosRejeitados() {
+    void deveriaRetornarListaDePagamentosRejeitados() {
 
         List<Pagamento> listaPagamentos = setupListaDePagamentos(StatusPagamento.REJECTED);
 
@@ -117,7 +117,7 @@ public class BuscaPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaRetornarListaDePagamentosPendentes() {
+    void deveriaRetornarListaDePagamentosPendentes() {
 
 
         List<Pagamento> listaPagamentos = setupListaDePagamentos(StatusPagamento.PENDING);
@@ -134,7 +134,7 @@ public class BuscaPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaRetornarListaDePagamentosEmProcessamento() {
+    void deveriaRetornarListaDePagamentosEmProcessamento() {
 
         List<Pagamento> listaPagamentos = setupListaDePagamentos(StatusPagamento.IN_PROCESS);
 

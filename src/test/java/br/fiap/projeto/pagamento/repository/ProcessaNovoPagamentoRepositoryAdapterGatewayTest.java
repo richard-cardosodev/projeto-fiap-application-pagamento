@@ -16,7 +16,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class ProcessaNovoPagamentoRepositoryAdapterGatewayTest {
+class ProcessaNovoPagamentoRepositoryAdapterGatewayTest {
 
     private IProcessaNovoPagamentoRepositoryAdapterGateway mockProcessaNovoPagamentoAdapterGateway;
 
@@ -35,13 +35,12 @@ public class ProcessaNovoPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaLancarExcecaoAoTentarCriarUmPagamentoSeNaoForPossivelPagar() {
+    void deveriaLancarExcecaoAoTentarCriarUmPagamentoSeNaoForPossivelPagar() {
 
-        when(processaNovoPagamentoUseCase.isPossivelPagar(eq(pagamento.getCodigoPedido()))).thenThrow(ResourceAlreadyInProcessException.class);
+        when(processaNovoPagamentoUseCase.isPossivelPagar(pagamento.getCodigoPedido())).thenThrow(ResourceAlreadyInProcessException.class);
         assertThrows(ResourceAlreadyInProcessException.class, () -> {
             processaNovoPagamentoUseCase.criaNovoPagamento(pagamento);
         });
-
         verify(mockProcessaNovoPagamentoAdapterGateway, never()).salvaNovoPagamento(any());
     }
 

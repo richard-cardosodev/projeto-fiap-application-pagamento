@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
-public class EnviaPagamentoAoGatewayRestControllerTest {
+class EnviaPagamentoAoGatewayRestControllerTest {
 
     @InjectMocks
     private EnviaPagamentoAoGatewayRestAdapterController enviaPagamentoAoGatewayRestAdapterController;
@@ -53,7 +53,7 @@ public class EnviaPagamentoAoGatewayRestControllerTest {
     }
 
     @Test
-    public void deveriaPrepararRequestParaEnviarPagamentoValidoAoGatewayDePagamentosController(){
+    void deveriaPrepararRequestParaEnviarPagamentoValidoAoGatewayDePagamentosController(){
 
         PagamentoAEnviarAoGatewayDTORequest requestGatewayDTO = setupRequestToExternalGateway();
         Pagamento pagamento = mock(Pagamento.class);
@@ -71,7 +71,7 @@ public class EnviaPagamentoAoGatewayRestControllerTest {
     }
 
     @Test
-    public void deveriaPrepararRequestParaAtualizarStatusDePagamentosUseCase(){
+    void deveriaPrepararRequestParaAtualizarStatusDePagamentosUseCase(){
 
         Pagamento pagamento = new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.IN_PROCESS, new Date(), 55.47);
 

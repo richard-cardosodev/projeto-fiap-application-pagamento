@@ -92,15 +92,15 @@ public class Pagamento {
 
 	private void validaPagamento() {
 		if ((codigo == null) || (codigoPedido == null) || (dataPagamento == null)) {
-			throw new UnprocessablePaymentException("Pagamento falhou");
+			throw new UnprocessablePaymentException("Pagamento falhou. Verifique os dados do Pagamento");
 		}
 
 		if ((valorTotal == null) || (valorTotal <= 0)) {
-			throw new UnprocessablePaymentException("Pagamento falhou");
+			throw new UnprocessablePaymentException("Pagamento falhou. Verifique o valor a ser pago.");
 		}
 
 		if (status == null) {
-			throw new NullPointerException("Pagamento falhou");
+			throw new NullPointerException("Pagamento falhou. Valor do pagamento inválido.");
 		}
 	}
 

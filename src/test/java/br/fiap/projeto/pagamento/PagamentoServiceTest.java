@@ -24,7 +24,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PagamentoServiceTest {
+class PagamentoServiceTest {
 
         @InjectMocks
         private BuscaPagamentoUseCase buscaPagamentoUseCase;
@@ -48,7 +48,7 @@ public class PagamentoServiceTest {
 
 
         @Test
-        public void deveriaRetornarUmPagamentoAoBuscarPorCodigoValido() {
+        void deveriaRetornarUmPagamentoAoBuscarPorCodigoValido() {
                 UUID codigo = UUID.randomUUID();
 
                 pagamento = new Pagamento(codigo, String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(), 55.41);
@@ -64,7 +64,7 @@ public class PagamentoServiceTest {
         }
 
         @Test
-        public void deveriaLancarExecaoAoBuscarUmPagamentoComCodigoInexistente() {
+        void deveriaLancarExecaoAoBuscarUmPagamentoComCodigoInexistente() {
                 UUID codigo = UUID.randomUUID();
                 assertThrows(ResourceNotFoundException.class, () -> {
                         buscaPagamentoUseCase.findByCodigo(codigo);
@@ -73,7 +73,7 @@ public class PagamentoServiceTest {
         }
 
         @Test
-        public void deveriaRetornarTodosOsPagamentos() {
+        void deveriaRetornarTodosOsPagamentos() {
 
                 List<Pagamento> listaDePagamentosMockados = setupListaDePagamentos();
 
@@ -90,7 +90,7 @@ public class PagamentoServiceTest {
         }
 
         @Test
-        public void deveriaCriarUmNovoPagamentoSeForPossivelPagar() {
+        void deveriaCriarUmNovoPagamentoSeForPossivelPagar() {
                 UUID codigo = UUID.randomUUID();
                 pagamento = new Pagamento(codigo, String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(), 75.51);
 

@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class BuscaPagamentoRepositoryAdapterGatewayTest {
+class BuscaPagamentoRepositoryAdapterGatewayTest {
 
     @Mock
     private SpringPagamentoRepository springPagamentoRepository;
@@ -56,7 +56,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaBuscarTodosOsPagamentos() {
+    void deveriaBuscarTodosOsPagamentos() {
 
         Mockito.when(springPagamentoRepository.findAll()).thenReturn(listaPagamentos);
         List<Pagamento> result = repositoryAdapterGateway.findAll();
@@ -67,7 +67,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
 
 
     @Test
-    public void deveriaBuscarUmPagamentoUsandoOCodigoDoPagamento() {
+    void deveriaBuscarUmPagamentoUsandoOCodigoDoPagamento() {
 
         PagamentoEntity pagamentoEntity = new PagamentoEntity(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(),
                 Math.random());
@@ -78,7 +78,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaBuscarUmPagamentoUsandoOCodigoDoPedido() {
+    void deveriaBuscarUmPagamentoUsandoOCodigoDoPedido() {
 
         Mockito.when(springPagamentoRepository.findByCodigoPedido(String.valueOf(codigoPedidoPagamento))).thenReturn(
                 new ArrayList<>(listaPagamentos));
@@ -91,7 +91,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaBuscarUmPagamentoUsandoOCodigoDoPedidoEStatus() {
+    void deveriaBuscarUmPagamentoUsandoOCodigoDoPedidoEStatus() {
 
         Mockito.when(springPagamentoRepository.findByCodigoPedidoAndStatusPagamento(codigoPedidoPagamento, StatusPagamento.APPROVED)).thenReturn(
                 new ArrayList<>(listaPagamentos));
@@ -104,7 +104,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaRetornarListaDePagamentosPorStatus() {
+    void deveriaRetornarListaDePagamentosPorStatus() {
 
         when(springPagamentoRepository.findByStatusPagamento(any(StatusPagamento.class)))
                 .thenReturn(listaPagamentos);
@@ -118,7 +118,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaRetornarListaDePagamentosPorStatusExcetoRejected() {
+    void deveriaRetornarListaDePagamentosPorStatusExcetoRejected() {
 
         when(springPagamentoRepository.findByCodigoPedidoAndStatusPagamentoNot(codigoPedidoPagamento, StatusPagamento.IN_PROCESS))
                 .thenReturn(new ArrayList<>(listaPagamentos));
@@ -136,7 +136,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
 
     }
     @Test
-    public void deveriaRetornarListaDePagamentosPorStatusRejected() {
+    void deveriaRetornarListaDePagamentosPorStatusRejected() {
 
         List<Pagamento> listaPagamentos = setupListaDePagamentos();
 
@@ -157,9 +157,8 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
 
     }
 
-    //TODO verificar esse comportamento
     @Test
-    public void deveriaRetornarPagamentosFiltrandoNaoRejeitados() {
+    void deveriaRetornarPagamentosFiltrandoNaoRejeitados() {
 
         Pagamento nonRejectedPayment =  new Pagamento(UUID.randomUUID(), codigoPedido, StatusPagamento.APPROVED, new Date(),31.22);
         Pagamento rejectedPayment =  new Pagamento(UUID.randomUUID(), "d8dc5531-25d9-4690-9636-07e5e419bc83", StatusPagamento.REJECTED, new Date(),35.4);
@@ -178,7 +177,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoNaoRejeitados() {
+    void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoNaoRejeitados() {
         
         assertThrows(ResourceNotFoundException.class, () -> {
             when(pagamentoAdapterGateway.findByCodigoPedidoAndStatusPagamentoNotRejected(codigoPedido, StatusPagamento.APPROVED))
@@ -191,7 +190,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoEmProcessamento() {
+    void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoEmProcessamento() {
 
         assertThrows(ResourceNotFoundException.class, () -> {
             when(pagamentoAdapterGateway.findByCodigoPedidoAndStatusPagamento(codigoPedido, StatusPagamento.IN_PROCESS))
@@ -204,7 +203,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoRejeitados() {
+    void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoRejeitados() {
 
         assertThrows(ResourceNotFoundException.class, () -> {
 
@@ -215,7 +214,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
         });
     }
         @Test
-        public void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoPendentes() {
+        void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigoPendentes() {
         
             assertThrows(ResourceNotFoundException.class, () -> {
 
@@ -227,7 +226,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigo() {
+    void deveriaLancarExcecaoQuandoNaoEncontrarResultadosBuscaPorCodigo() {
 
         assertThrows(ResourceNotFoundException.class, () -> {
 
@@ -239,7 +238,7 @@ public class BuscaPagamentoRepositoryAdapterGatewayTest {
     }
 
     @Test
-    public void deveriaRetornarUmaListaDePagamentoPorStatus() {
+    void deveriaRetornarUmaListaDePagamentoPorStatus() {
 
         List<Pagamento> listaPagamentos = setupListaDePagamentos();
         listaPagamentos = filterPaymentsByStatus(listaPagamentos, StatusPagamento.APPROVED);

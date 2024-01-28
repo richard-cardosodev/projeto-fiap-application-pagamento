@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-public class PagamentoIntegrationTest {
+class PagamentoIntegrationTest {
 
     private static final String ENDPOINT_ENVIA_GATEWAY = "/pagamento/gateway/gateway-de-pagamento";
     private static final String ENDPOINT_RETORNO_GATEWAY = "/pagamento/retorno-gateway/atualiza-status";
@@ -94,7 +94,7 @@ public class PagamentoIntegrationTest {
     }
 
     @Test
-    public void deveriaEnviarPagamentoValidoAoGatewayDePagamentos() throws Exception {
+    void deveriaEnviarPagamentoValidoAoGatewayDePagamentos() throws Exception {
         PagamentoAEnviarAoGatewayDTORequest requestDTO = setupRequestToExternalGateway();
 
         mockMvc.perform(
@@ -106,7 +106,7 @@ public class PagamentoIntegrationTest {
     }
 
     @Test
-    public void deveriaLancarExcecaoPagamentoInvalidoParaEnviarAoGatewayDePagamentos() throws Exception {
+    void deveriaLancarExcecaoPagamentoInvalidoParaEnviarAoGatewayDePagamentos() throws Exception {
          mockMvc.perform(
                     MockMvcRequestBuilders.post(ENDPOINT_ENVIA_GATEWAY)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -115,7 +115,7 @@ public class PagamentoIntegrationTest {
             .andExpect(status().isBadRequest());
     }
     @Test
-    public void  deveriaLancarExcecaoAoTentarSalvarNovoPagamentoParaPedidoJaExistente() throws Exception {
+    void  deveriaLancarExcecaoAoTentarSalvarNovoPagamentoParaPedidoJaExistente() throws Exception {
         PedidoAPagarDTORequest requestDTO = new PedidoAPagarDTORequest(pagamento.getCodigoPedido(), 25.74);
 
         mockMvc.perform(
@@ -127,7 +127,7 @@ public class PagamentoIntegrationTest {
     }
 
     @Test
-    public void deveriaEncontrarPagamentoPorCodigoPedido() throws Exception {
+    void deveriaEncontrarPagamentoPorCodigoPedido() throws Exception {
 
         String codigoPedido = "5a63ab44-32ee-463a-a8b8-eabc143e7419";
         Pagamento expectedPagamento = new Pagamento(UUID.randomUUID(), codigoPedido, StatusPagamento.APPROVED, new Date(), 50.0);
@@ -146,7 +146,7 @@ public class PagamentoIntegrationTest {
                 });
     }
     @Test
-    public void  deveriaSalvarNovoPagamentoParaPedido() throws Exception {
+    void  deveriaSalvarNovoPagamentoParaPedido() throws Exception {
 
         PedidoAPagarDTORequest novoRequestDTO = new PedidoAPagarDTORequest(String.valueOf(UUID.randomUUID()), 45.74);
         Mockito.when(pagamentoAdapterGateway.findByCodigoPedido(Mockito.any())).thenReturn(Collections.emptyList());
@@ -158,7 +158,7 @@ public class PagamentoIntegrationTest {
                 .andExpect(status().isCreated());
     }
     @Test
-    public void deveriaEncontrarPagamentoPorCodigo() throws Exception {
+    void deveriaEncontrarPagamentoPorCodigo() throws Exception {
 
         String url = String.format("%s/%s", ENDPOINT_BUSCA_PAGAMENTO, UUID.randomUUID());
         mockMvc.perform(
@@ -167,7 +167,7 @@ public class PagamentoIntegrationTest {
     }
 
     @Test
-    public void deveriaLancarExcecaoAoTentarEncontrarPagamentoPorCodigoPedido() throws Exception {
+    void deveriaLancarExcecaoAoTentarEncontrarPagamentoPorCodigoPedido() throws Exception {
 
         String url = String.format("%s/%s", ENDPOINT_BUSCA_PAGAMENTO_POR_CODIGO_PEDIDO, UUID.randomUUID());
         mockMvc.perform(
@@ -177,7 +177,7 @@ public class PagamentoIntegrationTest {
 
 
     @Test
-    public void deveriaListarTodosPagamentos() throws Exception {
+    void deveriaListarTodosPagamentos() throws Exception {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get(ENDPOINT_LISTA_PAGAMENTO)
@@ -185,14 +185,14 @@ public class PagamentoIntegrationTest {
     }
 
     @Test
-    public void deveriaEncontrarPagamentosAprovados() throws Exception {
+    void deveriaEncontrarPagamentosAprovados() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get(ENDPOINT_BUSCA_PAGAMENTOS_APROVADOS)
         ).andExpect(status().isOk());
     }
 
     @Test
-    public void deveriaAtualizarStatusDoPagamentoParaAprovado() throws Exception {
+    void deveriaAtualizarStatusDoPagamentoParaAprovado() throws Exception {
         PagamentoStatusDTORequest requestDTO = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED);
         mockMvc.perform(
                 MockMvcRequestBuilders.patch(ENDPOINT_RETORNO_GATEWAY)
@@ -202,7 +202,7 @@ public class PagamentoIntegrationTest {
     }
 
     @Test
-    public void deveriaAtualizarStatusDoPagamentoParaCancelado() throws Exception {
+    void deveriaAtualizarStatusDoPagamentoParaCancelado() throws Exception {
         PagamentoStatusDTORequest requestDTO = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.CANCELLED);
         mockMvc.perform(
                 MockMvcRequestBuilders.patch(ENDPOINT_RETORNO_GATEWAY)
@@ -211,7 +211,7 @@ public class PagamentoIntegrationTest {
         ).andExpect(status().isOk());
     }
     @Test
-    public void deveriaAtualizarStatusDoPagamentoParaRejeitado() throws Exception {
+    void deveriaAtualizarStatusDoPagamentoParaRejeitado() throws Exception {
         PagamentoStatusDTORequest requestDTO = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.REJECTED);
         mockMvc.perform(
                 MockMvcRequestBuilders.patch(ENDPOINT_RETORNO_GATEWAY)
@@ -221,7 +221,7 @@ public class PagamentoIntegrationTest {
     }
 
     @Test
-    public void deveriaLancarExcecaoAoTentarAtualizarStatusDoPagamentoParaPendente() throws Exception {
+    void deveriaLancarExcecaoAoTentarAtualizarStatusDoPagamentoParaPendente() throws Exception {
         PagamentoStatusDTORequest requestDTO = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.PENDING);
         mockMvc.perform(
                 MockMvcRequestBuilders.patch(ENDPOINT_RETORNO_GATEWAY)
@@ -231,20 +231,20 @@ public class PagamentoIntegrationTest {
     }
 
     @Test
-    public void deveriaEncontrarPedidosAPagar() throws Exception {
+    void deveriaEncontrarPedidosAPagar() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get(ENDPOINT_BUSCA_PEDIDOS_A_PAGAR)
         ).andExpect(status().isOk());
     }
 
     @Test
-    public void deveriaEncontrarPedidosPorStatus() throws Exception {
+    void deveriaEncontrarPedidosPorStatus() throws Exception {
         String endpoint = String.format("/%s/%s", ENDPOINT_BUSCA_PAGAMENTO_POR_CODIGO_STATUS, StatusPagamento.PENDING);
         mockMvc.perform(MockMvcRequestBuilders.get(endpoint)).andExpect(status().isOk());
     }
 
     @Test
-    public void deveriaLancarExcecaoAoTentarAtualizarStatusDoPagamentoPedidoIntegrationInvalido() throws Exception {
+    void deveriaLancarExcecaoAoTentarAtualizarStatusDoPagamentoPedidoIntegrationInvalido() throws Exception {
         PagamentoPedidoResponse requestDTO = new PagamentoPedidoResponse(String.valueOf(UUID.randomUUID()),StatusPagamento.IN_PROCESS.name(), null);
         mockMvc.perform(
                 MockMvcRequestBuilders.patch(ENDPOINT_RETORNO_GATEWAY)

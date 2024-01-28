@@ -18,14 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PagamentoValidacoesTest {
 
     @Test
-    public void deveriaRetornarStatusCodeOkAoTentarCriarUmPagamentoValido() {
+    void deveriaRetornarStatusCodeOkAoTentarCriarUmPagamentoValido() {
         assertDoesNotThrow(
                 () -> new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(1234454), 50.89),
                 "Codigo: 200");
     }
 
     @Test
-    public void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoInvalido() {
+    void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoInvalido() {
         Assertions.assertThrows(
                 UnprocessablePaymentException.class,
                 () -> new Pagamento(null, String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(1234454), 50.89),
@@ -33,7 +33,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComCodigoInvalido() {
+    void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComCodigoInvalido() {
         assertThrows(
                 UnprocessablePaymentException.class,
                 () -> new Pagamento(UUID.randomUUID(), null, StatusPagamento.APPROVED, new Date(), 50.89),
@@ -41,7 +41,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComStatusInvalido() {
+    void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComStatusInvalido() {
         assertThrows(
                 NullPointerException.class,
                 () -> new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), null, new Date(), 50.89),
@@ -49,7 +49,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComDataInvalida() {
+    void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComDataInvalida() {
         assertThrows(
                 UnprocessablePaymentException.class,
                 () -> new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, null, 50.89),
@@ -57,7 +57,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComValorInvalido() {
+    void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComValorInvalido() {
         assertThrows(
                 UnprocessablePaymentException.class,
                 () -> new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(), null),
@@ -65,7 +65,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComValorTotalZero() {
+    void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComValorTotalZero() {
         assertThrows(
                 UnprocessablePaymentException.class,
                 () -> new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(), 0d),
@@ -73,7 +73,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComValorTotalInvalido() {
+    void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComValorTotalInvalido() {
         assertThrows(
                 UnprocessablePaymentException.class,
                 () -> new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(), -10d),
@@ -81,7 +81,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComValorTotalNulo() {
+    void deveriaRetornarUmaExcecaoAoTentarCriarUmPagamentoComValorTotalNulo() {
         Assertions.assertThrows(
                 UnprocessablePaymentException.class,
                 () -> new Pagamento(null, String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(1234454), null),
@@ -89,7 +89,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaCriarUmPagamentoComTodosOsDadosExcetoCodigoPagamento(){
+    void deveriaCriarUmPagamentoComTodosOsDadosExcetoCodigoPagamento(){
 
         String codigoPedido = String.valueOf(UUID.randomUUID());
         Double valorTotal = 100.0;
@@ -106,7 +106,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaCriarUmPagamentoApenasComCodigoPedidoEStatus(){
+    void deveriaCriarUmPagamentoApenasComCodigoPedidoEStatus(){
 
         String codigoPedido = String.valueOf(UUID.randomUUID());
         StatusPagamento status = StatusPagamento.PENDING;
@@ -119,7 +119,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaColocarPagamentoEmProcessamento(){
+    void deveriaColocarPagamentoEmProcessamento(){
 
         Pagamento pagamento = setupPayment(StatusPagamento.PENDING);
 
@@ -129,21 +129,21 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaCancelarPagamentoValido(){
+    void deveriaCancelarPagamentoValido(){
         Pagamento pagamento = setupPayment(StatusPagamento.REJECTED);
         pagamento.cancelaPagamento(pagamento);
         assertEquals(StatusPagamento.CANCELLED, pagamento.getStatus());
     }
 
     @Test
-    public void deveriaRejeitarPagamentoValido(){
+    void deveriaRejeitarPagamentoValido(){
         Pagamento pagamento = setupPayment(StatusPagamento.CANCELLED);
         pagamento.rejeitaPagamento(pagamento);
         assertEquals(StatusPagamento.REJECTED, pagamento.getStatus());
     }
 
     @Test
-    public void deveriaAprovarPagamentoValido(){
+    void deveriaAprovarPagamentoValido(){
         Pagamento pagamento = setupPayment(StatusPagamento.IN_PROCESS);
         pagamento.aprovaPagamento(pagamento);
         assertEquals(StatusPagamento.APPROVED, pagamento.getStatus());
@@ -152,7 +152,7 @@ public class PagamentoValidacoesTest {
 
 
     @Test
-    public void deveriaColocarPagamentoValidoEPendenteEmProcessamento(){
+    void deveriaColocarPagamentoValidoEPendenteEmProcessamento(){
         Pagamento pagamento = setupPayment(StatusPagamento.PENDING);
         pagamento.colocaEmProcessamento(pagamento);
         assertEquals(StatusPagamento.IN_PROCESS, pagamento.getStatus());
@@ -160,7 +160,7 @@ public class PagamentoValidacoesTest {
 
 
     @Test
-    public void deveriaVerificarDoisPagamentosDiferentes(){
+    void deveriaVerificarDoisPagamentosDiferentes(){
 
         PagamentoEntity pagamentoA = new PagamentoEntity(setupPayment(StatusPagamento.PENDING));
         PagamentoEntity pagamentoB = new PagamentoEntity(setupPayment(StatusPagamento.IN_PROCESS));
@@ -174,7 +174,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaRetornarOsAtributosDaEntidade(){
+    void deveriaRetornarOsAtributosDaEntidade(){
         PagamentoEntity pagamento = new PagamentoEntity(setupPayment(StatusPagamento.PENDING));
         String codigoPedido = pagamento.getCodigoPedido();
         UUID codigo = pagamento.getCodigo();
@@ -191,7 +191,7 @@ public class PagamentoValidacoesTest {
     }
 
     @Test
-    public void deveriaCriarUmPagamentoPedidoResponseDTO(){
+    void deveriaCriarUmPagamentoPedidoResponseDTO(){
         PagamentoPedidoResponseDTO pagamentoPedidoResponseDTO = new PagamentoPedidoResponseDTO(String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED.name());
 
         assertNotNull(pagamentoPedidoResponseDTO);

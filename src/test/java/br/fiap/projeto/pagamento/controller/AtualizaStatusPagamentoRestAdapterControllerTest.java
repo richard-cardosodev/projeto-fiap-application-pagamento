@@ -30,7 +30,7 @@ import br.fiap.projeto.pagamento.adapter.gateway.BuscaPagamentoRepositoryAdapter
 import br.fiap.projeto.pagamento.entity.Pagamento;
 import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
 
-public class AtualizaStatusPagamentoRestAdapterControllerTest {
+class AtualizaStatusPagamentoRestAdapterControllerTest {
 
     @InjectMocks
     private AtualizaStatusPagamentoRestAdapterController atualizaStatusPagamentoRestAdapterController;
@@ -56,7 +56,7 @@ public class AtualizaStatusPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaAtualizarStatusDoPagamentoPendenteParaEmProcessamento() {
+    void deveriaAtualizarStatusDoPagamentoPendenteParaEmProcessamento() {
 
         pagamentoAtualizado = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.IN_PROCESS);
 
@@ -67,7 +67,7 @@ public class AtualizaStatusPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaAtualizarStatusDoPagamentoEmProcessamentoParaAprovado(){
+    void deveriaAtualizarStatusDoPagamentoEmProcessamentoParaAprovado(){
         //3A Arrange, Act, Assert
         pagamentoAtualizado = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED);
 
@@ -79,7 +79,7 @@ public class AtualizaStatusPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaAtualizarStatusDoPagamentoEmProcessamentoParaCancelado(){
+    void deveriaAtualizarStatusDoPagamentoEmProcessamentoParaCancelado(){
 
         pagamentoAtualizado = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.CANCELLED);
 
@@ -91,7 +91,7 @@ public class AtualizaStatusPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaAtualizarStatusDoPagamentoEmProcessamentoParaRejeitado(){
+    void deveriaAtualizarStatusDoPagamentoEmProcessamentoParaRejeitado(){
 
         pagamentoAtualizado = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.REJECTED);
 
@@ -103,7 +103,7 @@ public class AtualizaStatusPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaLancarExcecaoAoAtualizarStatusParaStatusInvalido(){
+    void deveriaLancarExcecaoAoAtualizarStatusParaStatusInvalido(){
 
         pagamentoAtualizado = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.PENDING);
 
@@ -121,7 +121,7 @@ public class AtualizaStatusPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaLancarExcecaoTransicaoInvalidaEntreEstadosEmProcessamento() {
+    void deveriaLancarExcecaoTransicaoInvalidaEntreEstadosEmProcessamento() {
         String codigoPedido = "f4f35c49-f1ef-483d-b6e1-fb2f0a5edf1e";
         StatusPagamento statusPagamento = StatusPagamento.IN_PROCESS;
         Pagamento pagamento = new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), statusPagamento, new Date(), 55.47);

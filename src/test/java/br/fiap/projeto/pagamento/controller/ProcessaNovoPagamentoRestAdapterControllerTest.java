@@ -22,7 +22,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class ProcessaNovoPagamentoRestAdapterControllerTest {
+class ProcessaNovoPagamentoRestAdapterControllerTest {
 
     @Mock
     private IProcessaNovoPagamentoUseCase processaNovoPagamentoUseCase;
@@ -36,7 +36,7 @@ public class ProcessaNovoPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaCriarUmNovoPagamento() {
+    void deveriaCriarUmNovoPagamento() {
         PedidoAPagarDTORequest pedidoRequest = new PedidoAPagarDTORequest();
         Pagamento pagamento = new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED, new Date(),
                 50.89);
@@ -48,7 +48,7 @@ public class ProcessaNovoPagamentoRestAdapterControllerTest {
     }
 
     @Test
-    public void deveriaSalvarUmNovoPagamento() {
+    void deveriaSalvarUmNovoPagamento() {
 
         SpringPagamentoRepository mockSpringRepository = Mockito.mock(SpringPagamentoRepository.class);
         IBuscaPagamentoUseCase mockBuscaPagamentoUseCase = Mockito.mock(IBuscaPagamentoUseCase.class);
