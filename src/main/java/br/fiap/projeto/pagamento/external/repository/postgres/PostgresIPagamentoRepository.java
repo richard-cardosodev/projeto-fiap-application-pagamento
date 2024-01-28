@@ -19,7 +19,6 @@ public class PostgresIPagamentoRepository implements IPagamentoRepositoryAdapter
         this.springPagamentoRepository = springPagamentoRepository;
     }
 
-    //TODO Refatorar após testes - usado apenas no DataLoader
     @Override
     public void salvaPagamento(Pagamento pagamento) {
         springPagamentoRepository.save(new PagamentoEntity(pagamento));

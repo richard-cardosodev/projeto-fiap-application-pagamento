@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
-public class EnviaPagamentoAoGatewayDePagamentoAdapterGatewayTest {
+class EnviaPagamentoAoGatewayDePagamentoAdapterGatewayTest {
 
 
     private IBuscaPagamentoUseCase buscaPagamentoUseCaseMockado;
