@@ -2,20 +2,19 @@ package br.fiap.projeto.pagamento.adapter.controller.rest.request;
 
 import br.fiap.projeto.pagamento.entity.Pagamento;
 import br.fiap.projeto.pagamento.external.integration.port.Pedido;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
+@Data @NoArgsConstructor
 public class PedidoAPagarDTORequest {
 
     private String codigoPedido;
     private Double valorTotal;
     private Date dataPagamento;
     private List<Pedido> pedidos;
-
-    public PedidoAPagarDTORequest() {
-    }
 
     public PedidoAPagarDTORequest(String codigoPedido, Double valorTotal) {
         this.codigoPedido = codigoPedido;
@@ -43,48 +42,5 @@ public class PedidoAPagarDTORequest {
     //INFO usado na criação de um Novo Pagamento
     public Pagamento conversorDePedidoAPagarDTOParaPagamento(){
         return new Pagamento(codigoPedido, valorTotal);
-    }
-
-    public String getCodigoPedido() {
-        return codigoPedido;
-    }
-
-    public void setCodigoPedido(String codigoPedido) {
-        this.codigoPedido = codigoPedido;
-    }
-
-    public void setValorTotal(Double valorTotal) {
-        this.valorTotal = valorTotal;
-    }
-
-    public Double getValorTotal() {return valorTotal; }
-
-    public Date getDataPagamento() {
-        return dataPagamento;
-    }
-
-    public void setDataPagamento(Date dataPagamento) {
-        this.dataPagamento = dataPagamento;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PedidoAPagarDTORequest that = (PedidoAPagarDTORequest) o;
-        return Objects.equals(getCodigoPedido(), that.getCodigoPedido());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getCodigoPedido());
-    }
-
-    @Override
-    public String toString() {
-        return "PedidoAPagarDTO{" +
-                "codigoPedido=" + codigoPedido +
-                ", total=" + valorTotal +
-                '}';
     }
 }

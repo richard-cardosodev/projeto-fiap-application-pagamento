@@ -1,11 +1,10 @@
 package br.fiap.projeto.pagamento.entity;
 
-import java.util.Date;
-import java.util.Objects;
-import java.util.UUID;
-
 import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
 import br.fiap.projeto.pagamento.usecase.exceptions.UnprocessablePaymentException;
+
+import java.util.Date;
+import java.util.UUID;
 
 public class Pagamento {
 
@@ -71,21 +70,6 @@ public class Pagamento {
 		return valorTotal;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Pagamento pagamento = (Pagamento) o;
-		return Objects.equals(getCodigo(), pagamento.getCodigo());
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(getCodigo());
-	}
-
 	public void colocaEmProcessamento(Pagamento pagamento) {
 		pagamento.setStatus(StatusPagamento.IN_PROCESS);
 	}
@@ -115,7 +99,7 @@ public class Pagamento {
 			throw new UnprocessablePaymentException("Pagamento falhou");
 		}
 
-		if (status.equals(null)) {
+		if (status == null) {
 			throw new NullPointerException("Pagamento falhou");
 		}
 	}

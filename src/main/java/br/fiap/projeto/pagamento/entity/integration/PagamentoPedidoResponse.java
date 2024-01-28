@@ -1,7 +1,11 @@
 package br.fiap.projeto.pagamento.entity.integration;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
+@Data
 public class PagamentoPedidoResponse {
     private String codigoPedido;
     private String status;
@@ -11,22 +15,6 @@ public class PagamentoPedidoResponse {
         this.codigoPedido = codigoPedido;
         this.status = statusPagamento;
         this.dataPagamento = dataPagamento;
-    }
-
-    public String getCodigoPedido() {
-        return codigoPedido;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setCodigoPedido(String codigoPedido) {
-        this.codigoPedido = codigoPedido;
-    }
-
-    public void setStatus(String statusPagamento) {
-        this.status = statusPagamento;
     }
 
     public LocalDateTime getDataPagamento() {
