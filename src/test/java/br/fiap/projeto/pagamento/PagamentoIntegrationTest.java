@@ -10,6 +10,7 @@ import br.fiap.projeto.pagamento.external.integration.IPagamentoPedidoIntegratio
 import br.fiap.projeto.pagamento.external.integration.IPedidoIntegration;
 import br.fiap.projeto.pagamento.external.integration.port.Pedido;
 import br.fiap.projeto.pagamento.usecase.port.repository.IBuscaPagamentoRepositoryAdapterGateway;
+import br.fiap.projeto.pagamento.usecase.port.repository.IProcessaNovoPagamentoRepositoryAdapterGateway;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +58,11 @@ public class PagamentoIntegrationTest {
     @MockBean
     private IBuscaPagamentoRepositoryAdapterGateway pagamentoAdapterGateway;
 
+    @MockBean
+    private IProcessaNovoPagamentoRepositoryAdapterGateway  processaNovoPagamentoAdapterGateway;
+
+    private Pagamento pagamento;
+
     private String jsonString;
 
     @BeforeEach
@@ -65,6 +70,7 @@ public class PagamentoIntegrationTest {
 
         List<Pedido> listaDePedidos;
         List<Pagamento> listaDePagamentos;
+        pagamento = new Pagamento(UUID.randomUUID(), String.valueOf(UUID.randomUUID()), StatusPagamento.PENDING, new Date(), 62.18);
 
         listaDePedidos = Collections.singletonList(
                 new Pedido(
@@ -83,7 +89,7 @@ public class PagamentoIntegrationTest {
         Mockito.when(pagamentoAdapterGateway.findByCodigo(Mockito.any())).thenReturn(listaDePagamentos.get(0));
         Mockito.when(pagamentoAdapterGateway.findByCodigoPedidoAndStatusPagamento(Mockito.any(), Mockito.any())).thenReturn(listaDePagamentos);
 
-
+        Mockito.when(processaNovoPagamentoAdapterGateway.salvaNovoPagamento(Mockito.any())).thenReturn(pagamento);
         Mockito.when(pagamentoAdapterGateway.findByCodigoPedido(Mockito.any())).thenReturn(listaDePagamentos);
     }
 
@@ -109,28 +115,29 @@ public class PagamentoIntegrationTest {
             .andExpect(status().isBadRequest());
     }
     @Test
-    public void  deveriaSalvarNovoPagamento() throws Exception {
-        PedidoAPagarDTORequest requestDTO = new PedidoAPagarDTORequest(String.valueOf(UUID.randomUUID()), 25.74);
+    public void  deveriaLancarExcecaoAoTentarSalvarNovoPagamentoParaPedidoJaExistente() throws Exception {
+        PedidoAPagarDTORequest requestDTO = new PedidoAPagarDTORequest(pagamento.getCodigoPedido(), 25.74);
+
         mockMvc.perform(
                         MockMvcRequestBuilders.post(ENDPOINT_NOVO_PAGAMENTO)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(extractObjectToJson(requestDTO))
                 )
-                //.andExpect(status().isOk());
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void  deveriaLancarExcecaoAoTentarSalvarNovoPagamentoParaPedidoJaExistente() throws Exception {
-        PedidoAPagarDTORequest requestDTO = new PedidoAPagarDTORequest(String.valueOf(UUID.randomUUID()), 25.74);
+    public void  deveriaSalvarNovoPagamentoParaPedido() throws Exception {
+
+        PedidoAPagarDTORequest novoRequestDTO = new PedidoAPagarDTORequest(String.valueOf(UUID.randomUUID()), 45.74);
+        Mockito.when(pagamentoAdapterGateway.findByCodigoPedido(Mockito.any())).thenReturn(Collections.emptyList());
         mockMvc.perform(
                         MockMvcRequestBuilders.post(ENDPOINT_NOVO_PAGAMENTO)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(extractObjectToJson(requestDTO))
+                                .content(extractObjectToJson(novoRequestDTO))
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isCreated());
     }
-
     @Test
     public void deveriaEncontrarPagamentoPorCodigo() throws Exception {
 
