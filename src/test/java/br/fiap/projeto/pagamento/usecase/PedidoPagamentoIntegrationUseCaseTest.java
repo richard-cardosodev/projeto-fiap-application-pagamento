@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class PedidoPagamentoIntegrationUseCaseTest {
+class PedidoPagamentoIntegrationUseCaseTest {
     @Mock
     private IPagamentoPedidoIntegrationGateway pagamentoPedidoIntegrationGateway;
 
@@ -58,7 +58,7 @@ public class PedidoPagamentoIntegrationUseCaseTest {
 
 
     @Test
-    public void deveriaLancarExcecaoAoTentarBuscarUmPagamentoInexistenteParaAtualizarStatus() {
+    void deveriaLancarExcecaoAoTentarBuscarUmPagamentoInexistenteParaAtualizarStatus() {
 
         when(buscaPagamentoUseCase.findByCodigoPedido(codigoPedido)).thenReturn(pagamentoList).thenThrow(NoSuchElementException.class);
         assertThrows(NoSuchElementException.class, () -> {
@@ -68,7 +68,7 @@ public class PedidoPagamentoIntegrationUseCaseTest {
     }
 
     @Test
-    public void deveriaLancarUmaExcecaoDaIntegracaoAoTentarBuscarUmPagamentoInexistenteParaAtualizarStatus() {
+    void deveriaLancarUmaExcecaoDaIntegracaoAoTentarBuscarUmPagamentoInexistenteParaAtualizarStatus() {
 
         when(buscaPagamentoUseCase.findByCodigoPedido(codigoPedido)).thenReturn(pagamentoList).thenThrow(FeignException.class);
         doThrow(FeignException.class).when(pagamentoPedidoIntegrationGateway).atualizaStatusPagamentoPedido(any(PagamentoPedidoResponse.class));
@@ -78,7 +78,7 @@ public class PedidoPagamentoIntegrationUseCaseTest {
     }
 
     @Test
-    public void deveriaAtualizarOStatusDoPagamentoViaSchedulerIntegration() {
+    void deveriaAtualizarOStatusDoPagamentoViaSchedulerIntegration() {
 
         IPagamentoPedidoIntegrationGateway pagamentoPedidoIntegrationGatewayMock = mock(IPagamentoPedidoIntegrationGateway.class);
         IBuscaPagamentoUseCase buscaPagamentoUseCaseMock = mock(IBuscaPagamentoUseCase.class);
@@ -86,7 +86,7 @@ public class PedidoPagamentoIntegrationUseCaseTest {
         PagamentoPedidoIntegrationUseCase pagamentoPedidoIntegrationUseCase = new PagamentoPedidoIntegrationUseCase(
                 pagamentoPedidoIntegrationGatewayMock, buscaPagamentoUseCaseMock);
 
-        String codigoPedido = pagamento.getCodigoPedido(); // provide a valid code
+        String codigoPedido = pagamento.getCodigoPedido();
 
         List<Pagamento> pagamentos = Arrays.asList(
                 new Pagamento("91a032ce-8c0d-4574-9f10-76be33e5f148", StatusPagamento.APPROVED),

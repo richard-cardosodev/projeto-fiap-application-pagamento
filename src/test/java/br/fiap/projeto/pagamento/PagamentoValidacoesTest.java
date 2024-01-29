@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 
-public class PagamentoValidacoesTest {
+class PagamentoValidacoesTest {
 
     @Test
     void deveriaRetornarStatusCodeOkAoTentarCriarUmPagamentoValido() {

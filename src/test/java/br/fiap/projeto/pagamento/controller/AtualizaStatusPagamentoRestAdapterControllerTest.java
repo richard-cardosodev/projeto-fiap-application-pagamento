@@ -1,18 +1,12 @@
 package br.fiap.projeto.pagamento.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
+import br.fiap.projeto.pagamento.adapter.controller.AtualizaStatusPagamentoRestAdapterController;
 import br.fiap.projeto.pagamento.adapter.controller.rest.request.PagamentoDTORequest;
 import br.fiap.projeto.pagamento.adapter.controller.rest.request.PagamentoStatusDTORequest;
 import br.fiap.projeto.pagamento.adapter.gateway.AtualizaStatusPagamentoRepositoryAdapterGateway;
+import br.fiap.projeto.pagamento.adapter.gateway.BuscaPagamentoRepositoryAdapterGateway;
+import br.fiap.projeto.pagamento.entity.Pagamento;
+import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
 import br.fiap.projeto.pagamento.usecase.AtualizaStatusPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.BuscaPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.PagamentoPedidoIntegrationUseCase;
@@ -25,10 +19,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import br.fiap.projeto.pagamento.adapter.controller.AtualizaStatusPagamentoRestAdapterController;
-import br.fiap.projeto.pagamento.adapter.gateway.BuscaPagamentoRepositoryAdapterGateway;
-import br.fiap.projeto.pagamento.entity.Pagamento;
-import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
+import java.util.Date;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class AtualizaStatusPagamentoRestAdapterControllerTest {
 
@@ -142,7 +137,7 @@ class AtualizaStatusPagamentoRestAdapterControllerTest {
             fail("Expected UnprocessablePaymentException, but no exception was thrown.");
         } catch (UnprocessablePaymentException e) {
             assertNotNull(e.getMessage());
-            assertEquals(e.getMessage(), "Transição entre estados de pagamento inválida. Verifique e tente novamente.");
+            assertEquals("Transição entre estados de pagamento inválida. Verifique e tente novamente.",e.getMessage());
         }
     }
 }
