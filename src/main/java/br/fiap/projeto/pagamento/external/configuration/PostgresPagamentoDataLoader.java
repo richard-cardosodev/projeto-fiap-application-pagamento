@@ -15,8 +15,11 @@ import java.util.UUID;
 @Configuration
 public class PostgresPagamentoDataLoader {
 
+    private final PostgresIPagamentoRepository pagamentoRepository;
     @Autowired
-    private PostgresIPagamentoRepository pagamentoRepository;
+    public PostgresPagamentoDataLoader(PostgresIPagamentoRepository pagamentoRepository){
+        this.pagamentoRepository = pagamentoRepository;
+    }
 
     @PostConstruct
     public void init(){

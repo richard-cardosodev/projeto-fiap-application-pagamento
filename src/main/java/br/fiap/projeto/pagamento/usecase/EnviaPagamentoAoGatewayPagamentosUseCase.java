@@ -29,7 +29,6 @@ public class EnviaPagamentoAoGatewayPagamentosUseCase implements IEnviaPagamento
     public void enviaRequestAoSistemaExternoPagamentos(String codigoPedido, StatusPagamento status) {
        logger.info("Enviando pagamento ao Sistema Externo de Pagamentos: MercadoPago");
        logger.info("Pagamento agora será processado pelo Gateway de Pagamento.");
-       logger.info("Pagamento do Pedido: " + codigoPedido);
    }
 
     @Override

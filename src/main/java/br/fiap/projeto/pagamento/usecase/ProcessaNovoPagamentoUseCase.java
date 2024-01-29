@@ -9,11 +9,9 @@ import br.fiap.projeto.pagamento.usecase.port.usecase.IBuscaPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IProcessaNovoPagamentoUseCase;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 public class ProcessaNovoPagamentoUseCase implements IProcessaNovoPagamentoUseCase {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
     private final IProcessaNovoPagamentoRepositoryAdapterGateway processaNovoPagamentoAdapterGateway;
     private final IBuscaPagamentoUseCase buscaPagamentoUseCase;
 
@@ -41,7 +39,6 @@ public class ProcessaNovoPagamentoUseCase implements IProcessaNovoPagamentoUseCa
     public Pagamento criaNovoPagamento(Pagamento pagamento) {
         if (this.isPossivelPagar(pagamento.getCodigoPedido())) {
             processaNovoPagamentoAdapterGateway.salvaNovoPagamento(pagamento);
-            logger.info("USE CASE: Novo pagamento criado para o pedido: " + pagamento.getCodigoPedido());
             return pagamento;
         } else {
             throw new ResourceAlreadyInProcessException(MensagemDeErro.PAGAMENTO_EXISTENTE.getMessage());
