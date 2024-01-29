@@ -163,8 +163,7 @@ class PagamentoIntegrationTest {
     }
     @Test
     void deveriaEncontrarPagamentoPorCodigo() throws Exception {
-
-        String url = String.format("%s/%s", ENDPOINT_BUSCA_PAGAMENTO, UUID.randomUUID());
+      String url = String.format("%s/%s", ENDPOINT_BUSCA_PAGAMENTO, UUID.randomUUID());
         mockMvc.perform(
                 MockMvcRequestBuilders.get(url)
         ).andExpect(status().isOk());
@@ -172,8 +171,8 @@ class PagamentoIntegrationTest {
 
     @Test
     void deveriaLancarExcecaoAoTentarEncontrarPagamentoPorCodigoPedido() throws Exception {
-
-        String url = String.format("%s/%s", ENDPOINT_BUSCA_PAGAMENTO_POR_CODIGO_PEDIDO, UUID.randomUUID());
+        String codigoPedido = "CODIGO_PEDIDO";
+        String url = String.format("%s/%s", ENDPOINT_BUSCA_PAGAMENTO_POR_CODIGO_PEDIDO, codigoPedido);
         mockMvc.perform(
                 MockMvcRequestBuilders.get(url)
         ).andExpect(status().isNotFound());
