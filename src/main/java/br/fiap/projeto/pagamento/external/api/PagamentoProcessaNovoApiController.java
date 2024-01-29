@@ -18,7 +18,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/pagamento/processa")
-@Api(tags = {"Pagamento - Criação de Pagamentos"}, description = "Endpoint para criar um novo pagamento.")
+@Api(tags = {"Pagamento - Criação de Pagamentos"})
 public class PagamentoProcessaNovoApiController {
 
     private final IProcessaPagamentoRestAdapterController processaPagamentoRestAdapterController;

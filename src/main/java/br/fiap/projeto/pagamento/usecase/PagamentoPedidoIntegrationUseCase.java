@@ -15,9 +15,11 @@ import java.time.LocalDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class PagamentoPedidoIntegrationUseCase implements IPagamentoPedidoIntegrationUseCase {
 
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private final IPagamentoPedidoIntegrationGateway pagamentoPedidoIntegrationGateway;
 
     private final IBuscaPagamentoUseCase buscaPagamentoUseCase;
@@ -43,10 +45,10 @@ public class PagamentoPedidoIntegrationUseCase implements IPagamentoPedidoIntegr
             try{
                 atualizarPagamentoPedido(pagamento);
             }catch(FeignException fe){
-                fe.printStackTrace();
+                logger.info("Não foi possível atualizar o status do Pedido. Integração entre serviços falhou.");
                 throw new PagamentoPedidoIntegrationException(MensagemDeErro.ERRO_INTEGRACAO.getMessage());
             }catch(Exception e){
-                e.printStackTrace();
+                logger.info("Não foi possível atualizar o status do Pedido. Operação inválida durante a integração.");
                 throw new InvalidOperationIntegrationException(MensagemDeErro.ENVIO_ATUALIZACAO_STATUS_INTEGRACAO_FALHA.getMessage());
             } finally {
                 shutDownScheduler();

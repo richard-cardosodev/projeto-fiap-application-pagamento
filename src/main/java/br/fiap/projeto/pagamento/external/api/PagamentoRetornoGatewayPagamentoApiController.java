@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/pagamento/retorno-gateway")
-@Api(tags = {"Pagamento - Integração"}, description = "Endpoints de integração com Gateway de Pagamento.")
+@Api(tags = {"Pagamento - Integração"})
 public class PagamentoRetornoGatewayPagamentoApiController {
 
     private final IAtualizaPagamentoRestAdapterController atualizaPagamentoRestAdapterController;
@@ -25,7 +25,6 @@ public class PagamentoRetornoGatewayPagamentoApiController {
         this.atualizaPagamentoRestAdapterController = atualizaPagamentoRestAdapterController;
     }
 
-    //INFO Vai simular a chegada do Código do Pedido e seu novo Status como resposta simulada do Gateway
     @Transactional
     @PatchMapping(value="/atualiza-status")
     @ApiOperation(value="Atualiza Status dos Pagamentos", notes="Esse endpoint atualiza os status dos pagamentos, simulando o retorno que virá após envio ao Gateway de Pagamentos.")

@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/pagamento/busca")
-@Api(tags = {"Pagamento - Buscas"}, description = "Endpoints para consultas gerais dos pagamentos.")
+@Api(tags = {"Pagamento - Buscas"})
 public class PagamentoBuscaApiController {
 
     private final IBuscaPagamentoRestAdapterController buscaPagamentoRestAdapterController;

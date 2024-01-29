@@ -10,9 +10,11 @@ import br.fiap.projeto.pagamento.usecase.port.usecase.IBuscaPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IEnviaPagamentoAoGatewayPagamentosUseCase;
 
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 public class EnviaPagamentoAoGatewayPagamentosUseCase implements IEnviaPagamentoAoGatewayPagamentosUseCase {
 
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private final IBuscaPagamentoUseCase buscaPagamentoUseCase;
 
     private final IAtualizaStatusPagamentoUsecase atualizaStatusPagamentoUsecase;
@@ -25,7 +27,9 @@ public class EnviaPagamentoAoGatewayPagamentosUseCase implements IEnviaPagamento
 
    @Override
     public void enviaRequestAoSistemaExternoPagamentos(String codigoPedido, StatusPagamento status) {
-        printMensagensSimulaIntegracaoComSistemaExterno(codigoPedido);
+       logger.info("Enviando pagamento ao Sistema Externo de Pagamentos: MercadoPago");
+       logger.info("Pagamento agora será processado pelo Gateway de Pagamento.");
+       logger.info("Pagamento do Pedido: " + codigoPedido);
    }
 
     @Override
@@ -43,11 +47,6 @@ public class EnviaPagamentoAoGatewayPagamentosUseCase implements IEnviaPagamento
         }
     }
 
-    private static void printMensagensSimulaIntegracaoComSistemaExterno(String codigoPedido) {
-        System.out.println("Enviando pagamento ao Sistema Externo de Pagamentos: MercadoPago");
-        System.out.println("Pagamento agora será processado pelo Gateway de Pagamento.");
-        System.out.println("Pagamento do Pedido: " + codigoPedido);
-    }
     private void verificaPagamentoAntesDeEnviarAoGateway(String codigoPedido) {
         if(getPagamento(codigoPedido).getCodigo() == (null)){
             throw new ResourceNotFoundException(MensagemDeErro.PAGAMENTO_NAO_ENCONTRADO.getMessage());

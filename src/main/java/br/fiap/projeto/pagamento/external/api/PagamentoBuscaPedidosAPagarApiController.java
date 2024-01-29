@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value="/pagamento/pedido")
-@Api(tags = {"Pagamento - Integração Pedidos a Pagar"}, description = "Endpoint integrado ao domínio de Pedido para recuperar fila de pedidos a pagar.")
+@Api(tags = {"Pagamento - Integração Pedidos a Pagar"})
 public class PagamentoBuscaPedidosAPagarApiController {
 
     private final IPagamentoPedidoIntegrationGateway pagamentoPedidoIntegrationGateway;

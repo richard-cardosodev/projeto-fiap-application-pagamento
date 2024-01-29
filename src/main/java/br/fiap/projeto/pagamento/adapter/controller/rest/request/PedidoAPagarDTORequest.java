@@ -39,7 +39,6 @@ public class PedidoAPagarDTORequest {
 
     }
 
-    //INFO usado na criação de um Novo Pagamento
     public Pagamento conversorDePedidoAPagarDTOParaPagamento(){
         return new Pagamento(codigoPedido, valorTotal);
     }
