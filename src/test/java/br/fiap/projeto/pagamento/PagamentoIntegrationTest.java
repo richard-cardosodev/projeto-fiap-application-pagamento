@@ -256,7 +256,6 @@ class PagamentoIntegrationTest {
                         .content(extractObjectToJson(requestDTO))
         ).andExpect(status().isBadRequest());
     }
-
     private String extractObjectToJson(Object requestDTO) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return jsonString = objectMapper.writeValueAsString(requestDTO);

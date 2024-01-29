@@ -6,6 +6,9 @@ import br.fiap.projeto.pagamento.external.repository.postgres.SpringPagamentoRep
 import br.fiap.projeto.pagamento.usecase.port.repository.IProcessaNovoPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IBuscaPagamentoUseCase;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 public class ProcessaNovoPagamentoRepositoryAdapterGateway implements IProcessaNovoPagamentoRepositoryAdapterGateway {
 
     private final SpringPagamentoRepository springPagamentoRepository;
@@ -19,10 +22,13 @@ public class ProcessaNovoPagamentoRepositoryAdapterGateway implements IProcessaN
     @Override
     public Pagamento salvaNovoPagamento(Pagamento pagamento) {
         springPagamentoRepository.save(new PagamentoEntity(pagamento));
-        return buscaPagamentoUseCase
+        Optional<Pagamento> optionalPagamento = buscaPagamentoUseCase
                 .findByCodigoPedido(pagamento.getCodigoPedido())
                 .stream()
-                .filter(p -> p.getCodigoPedido()
-                        .equals(pagamento.getCodigoPedido())).findFirst().get();
+                .filter(p -> p.getCodigoPedido().equals(pagamento.getCodigoPedido()))
+                .findFirst();
+
+        return optionalPagamento
+                .orElseThrow(() -> new NoSuchElementException("Pagamento not found for codigoPedido: " + pagamento.getCodigoPedido()));
     }
 }
