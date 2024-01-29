@@ -134,10 +134,15 @@ class AtualizaStatusPagamentoRestAdapterControllerTest {
                 buscaPagamentoUseCaseMockado,
                 pedidoIntegrationUseCase
         );
-        assertThrows(UnprocessablePaymentException.class, () -> {
+
+        try {
             atualizaStatusPagamentoUseCase.atualizaStatusPagamentoGateway(codigoPedido, statusPagamento);
             verify(atualizaStatusPagamentoAdapterGateway, times(1)).atualizaStatusPagamento(pagamento);
-        });
 
+            fail("Expected UnprocessablePaymentException, but no exception was thrown.");
+        } catch (UnprocessablePaymentException e) {
+            assertNotNull(e.getMessage());
+            assertEquals(e.getMessage(), "Transição entre estados de pagamento inválida. Verifique e tente novamente.");
+        }
     }
 }

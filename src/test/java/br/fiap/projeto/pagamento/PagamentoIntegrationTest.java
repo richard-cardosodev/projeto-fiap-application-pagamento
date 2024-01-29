@@ -13,6 +13,7 @@ import br.fiap.projeto.pagamento.usecase.port.repository.IBuscaPagamentoReposito
 import br.fiap.projeto.pagamento.usecase.port.repository.IProcessaNovoPagamentoRepositoryAdapterGateway;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Collections;
@@ -135,7 +137,7 @@ class PagamentoIntegrationTest {
 
         String url = String.format("%s/%s", ENDPOINT_BUSCA_PAGAMENTO_POR_CODIGO_PEDIDO, pagamento.getCodigoPedido());
         Mockito.when(pagamentoAdapterGateway.findByCodigoPedido(codigoPedido)).thenReturn(expectedPagamentos);
-        mockMvc.perform(MockMvcRequestBuilders
+        MvcResult response = mockMvc.perform(MockMvcRequestBuilders
                         .get(url))
                 .andDo(result -> {
                     if (result.getResponse().getStatus() == 200) {
@@ -143,7 +145,9 @@ class PagamentoIntegrationTest {
                     } else if (result.getResponse().getStatus() == 404) {
                         result.getResolvedException().getMessage();
                     }
-                });
+                }).andReturn();
+
+        Assertions.assertNotNull(response.getResponse().getContentAsString());
     }
     @Test
     void  deveriaSalvarNovoPagamentoParaPedido() throws Exception {
