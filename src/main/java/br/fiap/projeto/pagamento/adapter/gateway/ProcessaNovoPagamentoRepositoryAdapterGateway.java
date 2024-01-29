@@ -3,6 +3,7 @@ package br.fiap.projeto.pagamento.adapter.gateway;
 import br.fiap.projeto.pagamento.entity.Pagamento;
 import br.fiap.projeto.pagamento.external.repository.entity.PagamentoEntity;
 import br.fiap.projeto.pagamento.external.repository.postgres.SpringPagamentoRepository;
+import br.fiap.projeto.pagamento.usecase.exceptions.mensagens.MensagemDeErro;
 import br.fiap.projeto.pagamento.usecase.port.repository.IProcessaNovoPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IBuscaPagamentoUseCase;
 
@@ -29,6 +30,6 @@ public class ProcessaNovoPagamentoRepositoryAdapterGateway implements IProcessaN
                 .findFirst();
 
         return optionalPagamento
-                .orElseThrow(() -> new NoSuchElementException("Pagamento not found for codigoPedido: " + pagamento.getCodigoPedido()));
+                .orElseThrow(() -> new NoSuchElementException(MensagemDeErro.PAGAMENTO_NAO_ENCONTRADO.getMessage()));
     }
 }

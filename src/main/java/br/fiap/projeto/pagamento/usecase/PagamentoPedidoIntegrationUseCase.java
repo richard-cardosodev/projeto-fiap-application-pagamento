@@ -12,6 +12,8 @@ import br.fiap.projeto.pagamento.usecase.port.usecase.IPagamentoPedidoIntegratio
 import feign.FeignException;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -57,11 +59,15 @@ public class PagamentoPedidoIntegrationUseCase implements IPagamentoPedidoIntegr
     }
 
     private Pagamento getPagamento(String codigoPedido) {
-        return buscaPagamentoUseCase.findByCodigoPedido(codigoPedido)
+        Optional<Pagamento> optionalPagamento = buscaPagamentoUseCase.findByCodigoPedido(codigoPedido)
                 .stream()
                 .filter(p -> p.getStatus().equals(StatusPagamento.APPROVED) || p.getStatus().equals(StatusPagamento.CANCELLED))
-                .findFirst()
-                .get();
+                .findFirst();
+        if (optionalPagamento.isPresent()) {
+            return optionalPagamento.get();
+        } else {
+            throw new NoSuchElementException(MensagemDeErro.PAGAMENTO_NAO_ENCONTRADO.getMessage());
+        }
     }
 
     @Override
