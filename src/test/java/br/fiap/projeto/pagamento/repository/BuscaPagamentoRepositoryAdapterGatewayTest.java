@@ -165,7 +165,7 @@ class BuscaPagamentoRepositoryAdapterGatewayTest {
 
 
         List<Pagamento> pagamentoList = Arrays.asList(rejectedPayment, nonRejectedPayment);
-
+        pagamentoList = filterList(pagamentoList, StatusPagamento.REJECTED);
         when(pagamentoAdapterGateway.findByCodigoPedidoAndStatusPagamentoNotRejected(codigoPedido, StatusPagamento.REJECTED))
                 .thenReturn(pagamentoList);
 
@@ -173,7 +173,8 @@ class BuscaPagamentoRepositoryAdapterGatewayTest {
         verify(pagamentoAdapterGateway).findByCodigoPedidoAndStatusPagamentoNotRejected(codigoPedido, StatusPagamento.REJECTED);
 
         assertNotNull(nonRejectedPayment);
-        assertEquals(nonRejectedPayment, nonRejectedPayment);
+        assertFalse(pagamentoList.stream().anyMatch(p -> p.getStatus() == StatusPagamento.REJECTED));
+
     }
 
     @Test

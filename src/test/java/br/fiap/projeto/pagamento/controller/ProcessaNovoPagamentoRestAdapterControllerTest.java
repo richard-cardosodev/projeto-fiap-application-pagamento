@@ -66,6 +66,4 @@ class ProcessaNovoPagamentoRestAdapterControllerTest {
 
         assertEquals(pagamento, result);
     }
-
-
 }
