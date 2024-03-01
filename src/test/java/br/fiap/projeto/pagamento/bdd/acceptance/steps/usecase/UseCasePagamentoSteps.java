@@ -7,6 +7,8 @@ import br.fiap.projeto.pagamento.usecase.BuscaPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.PagamentoPedidoIntegrationUseCase;
 import br.fiap.projeto.pagamento.usecase.ProcessaNovoPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.exceptions.ResourceNotFoundException;
+import br.fiap.projeto.pagamento.usecase.port.messaging.IPagamentoCanceladoQueueOUT;
+import br.fiap.projeto.pagamento.usecase.port.messaging.IPagamentoConfirmadoQueueOUT;
 import br.fiap.projeto.pagamento.usecase.port.repository.IAtualizaStatusPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.repository.IBuscaPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.repository.IProcessaNovoPagamentoRepositoryAdapterGateway;
@@ -32,6 +34,12 @@ public class UseCasePagamentoSteps {
 
     @Mock
     private IAtualizaStatusPagamentoRepositoryAdapterGateway atualizaStatusPagamentoRepository;
+
+    @Mock
+    private IPagamentoConfirmadoQueueOUT pagamentoConfirmadoQueueOUT;
+
+    @Mock
+    private IPagamentoCanceladoQueueOUT pagamentoCanceladoQueueOUT;
 
     @Mock
     private IAtualizaStatusPagamentoUsecase iAtualizaStatusPagamentoUsecase;
@@ -88,7 +96,7 @@ public class UseCasePagamentoSteps {
     }
     @When("attempting to fetch the payment not found")
     public void attempting_to_fetch_the_payment_not_found() {
-        atualizaStatusPagamentoUseCase = new AtualizaStatusPagamentoUseCase(atualizaStatusPagamentoRepository, buscaPagamentoUseCase, pagamentoPedidoIntegrationUseCase);
+        atualizaStatusPagamentoUseCase = new AtualizaStatusPagamentoUseCase(atualizaStatusPagamentoRepository, buscaPagamentoUseCase, pagamentoConfirmadoQueueOUT, pagamentoCanceladoQueueOUT);
 
         assertThrows(ResourceNotFoundException.class,() -> {
             atualizaStatusPagamentoUseCase.atualizaStatusPagamento(codigoPedido, StatusPagamento.APPROVED);

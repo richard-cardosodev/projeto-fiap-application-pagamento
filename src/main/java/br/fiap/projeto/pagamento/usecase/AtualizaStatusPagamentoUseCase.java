@@ -2,26 +2,30 @@ package br.fiap.projeto.pagamento.usecase;
 
 import br.fiap.projeto.pagamento.entity.Pagamento;
 import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
+import br.fiap.projeto.pagamento.usecase.exceptions.JsonProcessingException;
 import br.fiap.projeto.pagamento.usecase.exceptions.UnprocessablePaymentException;
 import br.fiap.projeto.pagamento.usecase.exceptions.mensagens.MensagemDeErro;
+import br.fiap.projeto.pagamento.usecase.port.messaging.IPagamentoCanceladoQueueOUT;
+import br.fiap.projeto.pagamento.usecase.port.messaging.IPagamentoConfirmadoQueueOUT;
 import br.fiap.projeto.pagamento.usecase.port.repository.IAtualizaStatusPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IAtualizaStatusPagamentoUsecase;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IBuscaPagamentoUseCase;
-import br.fiap.projeto.pagamento.usecase.port.usecase.IPagamentoPedidoIntegrationUseCase;
 
 public class AtualizaStatusPagamentoUseCase implements IAtualizaStatusPagamentoUsecase {
 
     private final IAtualizaStatusPagamentoRepositoryAdapterGateway atualizaStatusPagamentoAdapterGateway;
     private final IBuscaPagamentoUseCase buscaPagamentoUseCase;
-
-    private final IPagamentoPedidoIntegrationUseCase pagamentoPedidoIntegrationUseCase;
+    private final IPagamentoConfirmadoQueueOUT pagamentoConfirmadoQueueOUT;
+    private final IPagamentoCanceladoQueueOUT pagamentoCanceladoQueueOUT;
 
     public AtualizaStatusPagamentoUseCase(IAtualizaStatusPagamentoRepositoryAdapterGateway atualizaStatusPagamentoAdapterGateway,
                                           IBuscaPagamentoUseCase buscaPagamentoUseCase,
-                                          IPagamentoPedidoIntegrationUseCase pagamentoPedidoIntegrationUseCase) {
+                                          IPagamentoConfirmadoQueueOUT pagamentoConfirmadoQueueOUT,
+                                          IPagamentoCanceladoQueueOUT pagamentoCanceladoQueueOUT) {
         this.atualizaStatusPagamentoAdapterGateway = atualizaStatusPagamentoAdapterGateway;
         this.buscaPagamentoUseCase = buscaPagamentoUseCase;
-        this.pagamentoPedidoIntegrationUseCase = pagamentoPedidoIntegrationUseCase;
+        this.pagamentoConfirmadoQueueOUT = pagamentoConfirmadoQueueOUT;
+        this.pagamentoCanceladoQueueOUT = pagamentoCanceladoQueueOUT;
     }
 
     /**
@@ -36,7 +40,7 @@ public class AtualizaStatusPagamentoUseCase implements IAtualizaStatusPagamentoU
      * @param novoStatusPagamento
      */
     @Override
-    public void atualizaStatusPagamento(String codigoPedido, StatusPagamento novoStatusPagamento) {
+    public void atualizaStatusPagamento(String codigoPedido, StatusPagamento novoStatusPagamento) throws JsonProcessingException {
         Pagamento pagamento;
         switch (novoStatusPagamento){
             case CANCELLED:
@@ -60,14 +64,11 @@ public class AtualizaStatusPagamentoUseCase implements IAtualizaStatusPagamentoU
         }
         salvaStatus(pagamento);
 
-        if(novoStatusPagamento.equals(StatusPagamento.APPROVED) || novoStatusPagamento.equals(StatusPagamento.CANCELLED)) {
-            triggerAtualizaStatusPagamentoDoPedido(pagamento.getCodigoPedido());
+        if(novoStatusPagamento.equals(StatusPagamento.APPROVED)) {
+            this.pagamentoConfirmadoQueueOUT.publish(pagamento);
         }
-    }
-
-    private void triggerAtualizaStatusPagamentoDoPedido(String codigoPedido) {
-        {
-            pagamentoPedidoIntegrationUseCase.scheduleAtualizaPagamentoPedido(codigoPedido);
+        if(novoStatusPagamento.equals(StatusPagamento.CANCELLED)) {
+            this.pagamentoCanceladoQueueOUT.publish(pagamento);
         }
     }
 

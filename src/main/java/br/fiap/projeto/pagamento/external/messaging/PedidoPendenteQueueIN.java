@@ -16,7 +16,6 @@ import java.util.Map;
 @Service
 public class PedidoPendenteQueueIN implements IPedidoPendenteQueueIN {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private final IJsonConverter jsonConverter;
     private final IProcessaPagamentoRestAdapterController processaPagamentoRestAdapterController;
 
@@ -32,5 +31,6 @@ public class PedidoPendenteQueueIN implements IPedidoPendenteQueueIN {
         Map<String, Object> messageMap = jsonConverter.stringJsonToMapStringObject(message);
         PedidoAPagarDTORequest pedidoAPagarDTORequest = new PedidoAPagarDTORequest((String) messageMap.get("codigo"), (Double) messageMap.get("valorTotal"));
         processaPagamentoRestAdapterController.criaNovoPagamento(pedidoAPagarDTORequest);
+        logger.info("Efetuada a leitura da fila de pedidos pendentes!");
     }
 }
