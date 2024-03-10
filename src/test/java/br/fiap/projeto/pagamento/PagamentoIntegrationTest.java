@@ -1,5 +1,6 @@
 package br.fiap.projeto.pagamento;
 
+import br.fiap.projeto.pagamento.adapter.controller.rest.port.IProcessaPagamentoRestAdapterController;
 import br.fiap.projeto.pagamento.adapter.controller.rest.request.PagamentoAEnviarAoGatewayDTORequest;
 import br.fiap.projeto.pagamento.adapter.controller.rest.request.PagamentoStatusDTORequest;
 import br.fiap.projeto.pagamento.adapter.controller.rest.request.PedidoAPagarDTORequest;
@@ -9,6 +10,9 @@ import br.fiap.projeto.pagamento.entity.integration.PagamentoPedidoResponse;
 import br.fiap.projeto.pagamento.external.integration.IPagamentoPedidoIntegration;
 import br.fiap.projeto.pagamento.external.integration.IPedidoIntegration;
 import br.fiap.projeto.pagamento.external.integration.port.Pedido;
+import br.fiap.projeto.pagamento.external.messaging.PedidoPendenteQueueIN;
+import br.fiap.projeto.pagamento.external.utils.JsonConverter;
+import br.fiap.projeto.pagamento.usecase.port.IJsonConverter;
 import br.fiap.projeto.pagamento.usecase.port.repository.IBuscaPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.repository.IProcessaNovoPagamentoRepositoryAdapterGateway;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,6 +20,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,11 +33,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -62,6 +67,15 @@ class PagamentoIntegrationTest {
 
     @MockBean
     private IProcessaNovoPagamentoRepositoryAdapterGateway  processaNovoPagamentoAdapterGateway;
+
+    @Mock
+    private IJsonConverter jsonConverter;
+
+    @Mock
+    IProcessaPagamentoRestAdapterController processaPagamentoRestAdapterController;
+
+    @InjectMocks
+    private PedidoPendenteQueueIN pedidoPendenteQueueIN;
 
     private Pagamento pagamento;
 
@@ -268,5 +282,38 @@ class PagamentoIntegrationTest {
         requestDTO.setStatusPagamento(StatusPagamento.PENDING);
         return requestDTO;
     }
+    @Test
+    public void testPedidoPendenteQueueIN() throws Exception {
+        Map<String,Object> mapMockado = new HashMap<>();
+        mapMockado.put("codigo", UUID.randomUUID().toString());
+        mapMockado.put("valorTotal", (Double) 23.5);
 
+        Mockito.when(jsonConverter.stringJsonToMapStringObject(Mockito.anyString())).thenReturn(mapMockado);
+
+        String message = jsonConverter.convertObjectToJsonString(mapMockado);
+        pedidoPendenteQueueIN.receive(message);
+    }
+
+    @Test
+    public void jsonConverterTest() throws Exception {
+        JsonConverter JC = new JsonConverter();
+
+        Map<String,Object> mapComum = new HashMap<>();
+        mapComum.put("codigoPedido", "1");
+        mapComum.put("status", "APROVADO");
+
+        String jsonString = JC.convertObjectToJsonString(mapComum);
+
+        Map<String,Object> mapConvertido = JC.stringJsonToMapStringObject(jsonString);
+
+        System.out.println(mapComum.equals(mapConvertido));
+    }
+    @Test
+    public void jsonConverterTestException() throws Exception {
+        JsonConverter JC = new JsonConverter();
+
+        assertThrows(br.fiap.projeto.pagamento.usecase.exceptions.JsonProcessingException.class, () -> {
+            Map<String, Object> mapConvertido = JC.stringJsonToMapStringObject("STRING QUE CLARAMENTE NÃO É UM JSON!!!!");
+        });
+    }
 }
