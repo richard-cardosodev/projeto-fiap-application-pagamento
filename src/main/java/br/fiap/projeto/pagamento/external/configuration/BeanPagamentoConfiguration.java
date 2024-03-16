@@ -8,19 +8,20 @@ import br.fiap.projeto.pagamento.adapter.controller.rest.port.IAtualizaPagamento
 import br.fiap.projeto.pagamento.adapter.controller.rest.port.IBuscaPagamentoRestAdapterController;
 import br.fiap.projeto.pagamento.adapter.controller.rest.port.IEnviaPagamentoGatewayRestAdapterController;
 import br.fiap.projeto.pagamento.adapter.controller.rest.port.IProcessaPagamentoRestAdapterController;
-import br.fiap.projeto.pagamento.adapter.gateway.AtualizaStatusPagamentoRepositoryAdapterGateway;
-import br.fiap.projeto.pagamento.adapter.gateway.BuscaPagamentoRepositoryAdapterGateway;
-import br.fiap.projeto.pagamento.adapter.gateway.PagamentoPedidoIntegrationGateway;
-import br.fiap.projeto.pagamento.adapter.gateway.ProcessaNovoPagamentoRepositoryAdapterGateway;
+import br.fiap.projeto.pagamento.adapter.gateway.*;
 import br.fiap.projeto.pagamento.external.integration.IPagamentoPedidoIntegration;
 import br.fiap.projeto.pagamento.external.integration.IPedidoIntegration;
 import br.fiap.projeto.pagamento.external.repository.postgres.SpringPagamentoRepository;
 import br.fiap.projeto.pagamento.usecase.*;
+import br.fiap.projeto.pagamento.usecase.port.IJsonConverter;
+import br.fiap.projeto.pagamento.usecase.port.messaging.IPagamentoCanceladoQueueOUT;
+import br.fiap.projeto.pagamento.usecase.port.messaging.IPagamentoConfirmadoQueueOUT;
 import br.fiap.projeto.pagamento.usecase.port.repository.IAtualizaStatusPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.repository.IBuscaPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.repository.IPagamentoPedidoIntegrationGateway;
 import br.fiap.projeto.pagamento.usecase.port.repository.IProcessaNovoPagamentoRepositoryAdapterGateway;
 import br.fiap.projeto.pagamento.usecase.port.usecase.*;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -64,9 +65,10 @@ public class BeanPagamentoConfiguration {
 
     @Bean
     IAtualizaStatusPagamentoUsecase atualizaStatusPagamentoUsecase(IAtualizaStatusPagamentoRepositoryAdapterGateway atualizaStatusPagamentoAdapterGateway,
-                                                                   IBuscaPagamentoUseCase buscaPagamentoUseCase, IPagamentoPedidoIntegrationUseCase pagamentoPedidoIntegrationUseCase){
+                                                                   IBuscaPagamentoUseCase buscaPagamentoUseCase, IPagamentoConfirmadoQueueOUT pagamentoConfirmadoQueueOUT,
+                                                                   IPagamentoCanceladoQueueOUT pagamentoCanceladoQueueOUT){
         return new AtualizaStatusPagamentoUseCase(atualizaStatusPagamentoAdapterGateway,
-                buscaPagamentoUseCase, pagamentoPedidoIntegrationUseCase);
+                buscaPagamentoUseCase, pagamentoConfirmadoQueueOUT, pagamentoCanceladoQueueOUT);
     }
 
     @Bean
@@ -92,5 +94,15 @@ public class BeanPagamentoConfiguration {
     @Bean
     IPagamentoPedidoIntegrationUseCase pagamentoPedidoIntegrationUseCase(IPagamentoPedidoIntegrationGateway pagamentoPedidoIntegrationGateway, IBuscaPagamentoUseCase buscaPagamentoUseCase){
         return new PagamentoPedidoIntegrationUseCase(pagamentoPedidoIntegrationGateway, buscaPagamentoUseCase);
+    }
+
+    @Bean
+    IPagamentoConfirmadoQueueOUT pagamentoConfirmadoQueueOUT(RabbitTemplate rabbitTemplate, IJsonConverter jsonConverter) {
+        return new PagamentoConfirmadoQueueOUTAdapterGateway(rabbitTemplate, jsonConverter);
+    }
+
+    @Bean
+    IPagamentoCanceladoQueueOUT pagamentoCanceladoQueueOUT(RabbitTemplate rabbitTemplate, IJsonConverter jsonConverter) {
+        return new PagamentoCanceladoQueueOUTAdapterGateway(rabbitTemplate, jsonConverter);
     }
 }

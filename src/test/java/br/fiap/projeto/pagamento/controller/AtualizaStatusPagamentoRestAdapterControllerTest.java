@@ -10,7 +10,11 @@ import br.fiap.projeto.pagamento.entity.enums.StatusPagamento;
 import br.fiap.projeto.pagamento.usecase.AtualizaStatusPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.BuscaPagamentoUseCase;
 import br.fiap.projeto.pagamento.usecase.PagamentoPedidoIntegrationUseCase;
+import br.fiap.projeto.pagamento.usecase.exceptions.JsonProcessingException;
 import br.fiap.projeto.pagamento.usecase.exceptions.UnprocessablePaymentException;
+import br.fiap.projeto.pagamento.usecase.port.IJsonConverter;
+import br.fiap.projeto.pagamento.usecase.port.messaging.IPagamentoCanceladoQueueOUT;
+import br.fiap.projeto.pagamento.usecase.port.messaging.IPagamentoConfirmadoQueueOUT;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IAtualizaStatusPagamentoUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +40,10 @@ class AtualizaStatusPagamentoRestAdapterControllerTest {
     private IAtualizaStatusPagamentoUsecase atualizaStatusPagamentoUsecase;
     @Mock
     private BuscaPagamentoRepositoryAdapterGateway buscaPagamentoAdapterGateway;
+    @Mock
+    private IPagamentoConfirmadoQueueOUT pagamentoConfirmadoQueueOUT;
+    @Mock
+    private IPagamentoCanceladoQueueOUT pagamentoCanceladoQueueOUT;
 
     private PagamentoStatusDTORequest pagamentoAtualizado;
 
@@ -55,10 +63,13 @@ class AtualizaStatusPagamentoRestAdapterControllerTest {
 
         pagamentoAtualizado = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.IN_PROCESS);
 
-        atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
-
-        Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(),
-                StatusPagamento.IN_PROCESS);
+        try {
+            atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
+            Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(),
+                    StatusPagamento.IN_PROCESS);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -66,10 +77,13 @@ class AtualizaStatusPagamentoRestAdapterControllerTest {
         //3A Arrange, Act, Assert
         pagamentoAtualizado = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.APPROVED);
 
-        atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
-
-        Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(),
-                StatusPagamento.APPROVED);
+        try {
+            atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
+            Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(),
+                    StatusPagamento.APPROVED);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -78,10 +92,13 @@ class AtualizaStatusPagamentoRestAdapterControllerTest {
 
         pagamentoAtualizado = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.CANCELLED);
 
-        atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
-
-        Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(),
-                StatusPagamento.CANCELLED);
+        try {
+            atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
+            Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(),
+                    StatusPagamento.CANCELLED);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -90,10 +107,13 @@ class AtualizaStatusPagamentoRestAdapterControllerTest {
 
         pagamentoAtualizado = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.REJECTED);
 
-        atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
-
-        Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(),
-                StatusPagamento.REJECTED);
+        try {
+            atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
+            Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(),
+                    StatusPagamento.REJECTED);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -102,13 +122,16 @@ class AtualizaStatusPagamentoRestAdapterControllerTest {
 
         pagamentoAtualizado = new PagamentoStatusDTORequest(String.valueOf(UUID.randomUUID()), StatusPagamento.PENDING);
 
-        atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
-
-        Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(),
+        try {
+            atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
+            Mockito.verify(atualizaStatusPagamentoUsecase).atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(),
                 StatusPagamento.PENDING);
-        Mockito.doThrow(UnprocessablePaymentException.class)
-                .when(atualizaStatusPagamentoUsecase)
-                .atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(), pagamentoAtualizado.getStatus());
+            Mockito.doThrow(UnprocessablePaymentException.class)
+                    .when(atualizaStatusPagamentoUsecase)
+                    .atualizaStatusPagamento(pagamentoAtualizado.getCodigoPedido(), pagamentoAtualizado.getStatus());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         assertThrows(UnprocessablePaymentException.class, () ->{
             atualizaStatusPagamentoRestAdapterController.atualizaStatusPagamento(new PagamentoDTORequest(pagamentoAtualizado));
@@ -126,9 +149,8 @@ class AtualizaStatusPagamentoRestAdapterControllerTest {
 
         AtualizaStatusPagamentoUseCase atualizaStatusPagamentoUseCase = new AtualizaStatusPagamentoUseCase(
                 atualizaStatusPagamentoAdapterGateway,
-                buscaPagamentoUseCaseMockado,
-                pedidoIntegrationUseCase
-        );
+                buscaPagamentoUseCaseMockado, pagamentoConfirmadoQueueOUT,
+                pagamentoCanceladoQueueOUT);
 
         try {
             atualizaStatusPagamentoUseCase.atualizaStatusPagamentoGateway(codigoPedido, statusPagamento);

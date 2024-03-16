@@ -2,6 +2,7 @@ package br.fiap.projeto.pagamento.adapter.controller;
 
 import br.fiap.projeto.pagamento.adapter.controller.rest.port.IAtualizaPagamentoRestAdapterController;
 import br.fiap.projeto.pagamento.adapter.controller.rest.request.PagamentoDTORequest;
+import br.fiap.projeto.pagamento.usecase.exceptions.JsonProcessingException;
 import br.fiap.projeto.pagamento.usecase.port.usecase.IAtualizaStatusPagamentoUsecase;
 
 public class AtualizaStatusPagamentoRestAdapterController implements IAtualizaPagamentoRestAdapterController {
@@ -20,7 +21,7 @@ public class AtualizaStatusPagamentoRestAdapterController implements IAtualizaPa
      * @param pagamentoDTORequest
      */
     @Override
-    public void atualizaStatusPagamento(PagamentoDTORequest pagamentoDTORequest) {
+    public void atualizaStatusPagamento(PagamentoDTORequest pagamentoDTORequest) throws JsonProcessingException {
         atualizaStatusPagamentoUsecase.atualizaStatusPagamento(pagamentoDTORequest.getCodigoPedido(), pagamentoDTORequest.getStatus());
     }
 }
